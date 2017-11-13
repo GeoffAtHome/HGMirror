@@ -1,0 +1,70 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="battery-level">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: inline;
+        padding: 10px;
+      }
+    </style>
+    <iron-icon id="icon"></iron-icon>[[level]]%
+  </template>
+    
+  <script>
+    class BatteryLevel extends Polymer.Element {
+      static get is() {
+        return 'battery-level';
+      }
+
+      static get properties() {
+        return {
+          level: {
+              int: Object,
+              observer: 'dataChanged'
+            }
+          }
+        };
+
+        dataChanged(newData, oldData) {
+            var value = "";
+
+            if (newData > 90) {
+                value = "battery-full"
+            } else if (newData > 80) {
+                value = "battery-90"
+            } else if (newData > 60) {
+                value = "battery-80"
+            } else if (newData > 50) {
+                value = "battery-60"
+            } else if (newData > 30) {
+                value = "battery-50"
+            } else if (newData > 20) {
+                value = "battery-30"
+            } else if (newData > 10) {
+                value = "battery-20"
+            } else  {
+                value = "battery-alert"
+            }
+            if (value != "") {
+                this.$.icon.setAttribute('icon', "my-icons:" + value);
+            }
+          }
+        }
+
+    window.customElements.define(BatteryLevel.is, BatteryLevel);
+  </script>
+</dom-module>

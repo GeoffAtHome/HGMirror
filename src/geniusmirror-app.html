@@ -1,0 +1,57 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="zone-card.html">
+
+<dom-module id="geniusmirror-app">
+  <template>
+    <style include="iron-flex iron-flex-alignment shared-styles">
+        :host {
+          display: block;
+        }
+    </style>
+    <firebase-app 
+      api-key="" 
+      auth-domain = "" 
+      database-url="" 
+      project-id="" 
+      storage-bucket="" 
+      messaging-sender-id="">
+    </firebase-app>
+    <firebase-document id="location" path="/data" data="{{data}}"></firebase-document>
+    <app-indexeddb-mirror session="locations" key="data" data="{{zones}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+
+    <div class="layout center-justified horizontal wrap">
+      <template is="dom-repeat" items="[[data.zones]]" as="zone">
+        <zone-card zone="[[zone]]"></zone-card>
+      </template>
+    </div>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class GeniusmirrorApp extends Polymer.Element {
+      static get is() { return 'geniusmirror-app'; }
+      static get properties() {
+        return {
+          data: {
+            type: Object
+          },
+          persistedData: {
+            type: Object
+          },
+          zones: {
+            type: Array
+          }
+        };
+      }
+    }
+
+    window.customElements.define(GeniusmirrorApp.is, GeniusmirrorApp);
+  </script>
+</dom-module>
