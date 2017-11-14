@@ -1,1 +1,2 @@
-polymer build
+call polymer build
+call firebase deploy

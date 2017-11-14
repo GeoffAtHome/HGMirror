@@ -1,6 +1,6 @@
 {
     "name": "Genius Mirror",
-    "short_name": "Genius Mirror",
+    "short_name": "HG Mirror",
     "description": "Genius hub  web mirror",
     "icons": [{
             "src": "images/manifest/icon-192x192.png",
