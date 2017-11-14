@@ -13,18 +13,18 @@
         }
     </style>
     <firebase-app 
-      api-key="" 
-      auth-domain = "" 
-      database-url="" 
-      project-id="" 
-      storage-bucket="" 
-      messaging-sender-id="">
+      api-key="AIzaSyC-wDzT4re8AFZekn5ot0S4A0oEmPfr1VU" 
+      auth-domain = "heatgeniusmirror.firebaseapp.com" 
+      database-url="https://heatgeniusmirror.firebaseio.com" 
+      project-id="heatgeniusmirror" 
+      storage-bucket="heatgeniusmirror.appspot.com" 
+      messaging-sender-id="634253163682">
     </firebase-app>
     <firebase-document id="location" path="/data" data="{{data}}"></firebase-document>
-    <app-indexeddb-mirror session="locations" key="data" data="{{zones}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror session="locations" key="data" data="{{data}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
 
     <div class="layout center-justified horizontal wrap">
-      <template is="dom-repeat" items="[[data.zones]]" as="zone">
+      <template is="dom-repeat" items="[[persistedData.zones]]" as="zone">
         <zone-card zone="[[zone]]"></zone-card>
       </template>
     </div>
@@ -41,15 +41,8 @@
             }
             static get properties() {
                 return {
-                    data: {
-                        type: Object
-                    },
-                    persistedData: {
-                        type: Object
-                    },
-                    zones: {
-                        type: Array
-                    }
+                    data: Object,
+                    persistedData: Object
                 };
             }
         }

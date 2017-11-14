@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="battery-level.html">
+<link rel="import" href="last-seen.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="radiator-device">
@@ -26,16 +27,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
     </style>
     <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
-    <app-indexeddb-mirror session="locations" key="[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror session="locations" key="/rad/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
     <div class="horizontal layout">
-        <div class="di">
+        <div style="width: 10px">
             <iron-icon icon="my-icons:radiator"></iron-icon>
         </div>
-        <div class="dl">
-            <battery-level level="[[reading.Battery]]"></battery-level>
+        <div style="width: 75px">
+            <battery-level level="[[persistedData.Battery]]"></battery-level>
         </div>
-        <div class="dl">
+        <div style="width: 75px">
             <iron-icon icon="my-icons:temperature"></iron-icon>[[temperature]]°
+        </div>
+        <div style="width: 50px">
+            <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
         </div>
     </div>
   </template>

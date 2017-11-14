@@ -14,7 +14,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="battery-level">
-  <template>
+    <template>
     <style include="shared-styles">
        :host {
         display: inline;
@@ -23,48 +23,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <iron-icon id="icon"></iron-icon>[[level]]%
   </template>
-    
-  <script>
-    class BatteryLevel extends Polymer.Element {
-      static get is() {
-        return 'battery-level';
-      }
 
-      static get properties() {
-        return {
-          level: {
-              int: Object,
-              observer: 'dataChanged'
+    <script>
+        class BatteryLevel extends Polymer.Element {
+            static get is() {
+                return 'battery-level';
             }
-          }
-        };
 
-        dataChanged(newData, oldData) {
-            var value = "";
+            static get properties() {
+                return {
+                    level: {
+                        type: Number,
+                        observer: 'dataChanged'
+                    }
+                }
+            };
 
-            if (newData > 90) {
-                value = "battery-full"
-            } else if (newData > 80) {
-                value = "battery-90"
-            } else if (newData > 60) {
-                value = "battery-80"
-            } else if (newData > 50) {
-                value = "battery-60"
-            } else if (newData > 30) {
-                value = "battery-50"
-            } else if (newData > 20) {
-                value = "battery-30"
-            } else if (newData > 10) {
-                value = "battery-20"
-            } else  {
-                value = "battery-alert"
+            dataChanged(newData, oldData) {
+                var value = "";
+
+                if (newData > 90) {
+                    value = "battery-full"
+                } else if (newData > 80) {
+                    value = "battery-90"
+                } else if (newData > 60) {
+                    value = "battery-80"
+                } else if (newData > 50) {
+                    value = "battery-60"
+                } else if (newData > 30) {
+                    value = "battery-50"
+                } else if (newData > 20) {
+                    value = "battery-30"
+                } else if (newData > 10) {
+                    value = "battery-20"
+                } else {
+                    value = "battery-alert"
+                }
+                if (value != "") {
+                    this.$.icon.setAttribute('icon', "my-icons:" + value);
+                }
             }
-            if (value != "") {
-                this.$.icon.setAttribute('icon', "my-icons:" + value);
-            }
-          }
         }
 
-    window.customElements.define(BatteryLevel.is, BatteryLevel);
-  </script>
+        window.customElements.define(BatteryLevel.is, BatteryLevel);
+    </script>
 </dom-module>
