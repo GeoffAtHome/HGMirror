@@ -16,72 +16,71 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="device-card">
-  <template>
-    <style include="shared-styles">
-    :host {
-        display: block;
-        width: 100%;
-    }
-    </style>
-    </div>
-        <template is="dom-if" if="{{onoff}}">
-            <switch-device device="[[device.readings]]"></switch-device>
-        </template>
-        <template is="dom-if" if="{{radiator}}">
-            <radiator-device device="[[device.readings]]"></radiator-device>
-        </template>
-        <template is="dom-if" if="{{sensor}}">
-            <sensor-device device="[[device.readings]]"></sensor-device>
-        </template>
-    </template>
-    
-  <script>
-    class DeviceCard extends Polymer.Element {
-      static get is() {
-        return 'device-card';
+    <template>
+      <style include="shared-styles">
+      :host {
+          display: block;
+          width: 100%;
       }
+      </style>
+      <template is="dom-if" if="{{onoff}}">
+        <switch-device node_id="[[node.node_id]]"></switch-device>
+      </template>
+    <template is="dom-if" if="{{radiator}}">
+        <radiator-device node_id="[[node.node_id]]"></radiator-device>
+      </template>
+    <template is="dom-if" if="{{sensor}}">
+        <sensor-device node_id="[[node.node_id]]"></sensor-device>
+      </template>
+    </template>
 
-      static get properties() {
-        return {
-          device: {
-              type: Object,
-              observer: 'dataChanged'
-            },
-            radiator: {
-              type: Boolean,
-              value: false
-            },
-            sensor: {
-              type: Boolean,
-              value: false
-            },
-            onoff: {
-              type: Boolean,
-              value: false
+    <script>
+        class DeviceCard extends Polymer.Element {
+            static get is() {
+                return 'device-card';
             }
-          }
-        };
 
-        dataChanged(newData, oldData) {
-            switch(newData.devicetype) {
-                case 'Radiator valve':
-                    this.radiator = true;
-                    break;
-                
-                case 'Switch':
-                    this.onoff = true;
-                    break;
+            static get properties() {
+                return {
+                    node: {
+                        type: Object,
+                        observer: 'dataChanged'
+                    },
+                    radiator: {
+                        type: Boolean,
+                        value: false
+                    },
+                    sensor: {
+                        type: Boolean,
+                        value: false
+                    },
+                    onoff: {
+                        type: Boolean,
+                        value: false
+                    }
+                }
+            };
 
-                case 'Sensor':
-                    this.sensor = true;
-                    break;
-                
-                default:
-                    break;
+            dataChanged(newData, oldData) {
+                switch (newData.node_type) {
+                    case 'Radiator valve':
+                        this.radiator = true;
+                        break;
+
+                    case 'Switch':
+                        this.onoff = true;
+                        break;
+
+                    case 'Sensor':
+                        this.sensor = true;
+                        break;
+
+                    default:
+                        break;
+                }
             }
-          }
         }
 
-    window.customElements.define(DeviceCard.is, DeviceCard);
-  </script>
+        window.customElements.define(DeviceCard.is, DeviceCard);
+    </script>
 </dom-module>

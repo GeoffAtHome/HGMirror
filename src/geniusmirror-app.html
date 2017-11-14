@@ -6,7 +6,7 @@
 <link rel="import" href="zone-card.html">
 
 <dom-module id="geniusmirror-app">
-  <template>
+    <template>
     <style include="iron-flex iron-flex-alignment shared-styles">
         :host {
           display: block;
@@ -28,30 +28,32 @@
         <zone-card zone="[[zone]]"></zone-card>
       </template>
     </div>
-  </template>
+    </template>
 
-  <script>
-    /**
-     * @customElement
-     * @polymer
-     */
-    class GeniusmirrorApp extends Polymer.Element {
-      static get is() { return 'geniusmirror-app'; }
-      static get properties() {
-        return {
-          data: {
-            type: Object
-          },
-          persistedData: {
-            type: Object
-          },
-          zones: {
-            type: Array
-          }
-        };
-      }
-    }
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class GeniusmirrorApp extends Polymer.Element {
+            static get is() {
+                return 'geniusmirror-app';
+            }
+            static get properties() {
+                return {
+                    data: {
+                        type: Object
+                    },
+                    persistedData: {
+                        type: Object
+                    },
+                    zones: {
+                        type: Array
+                    }
+                };
+            }
+        }
 
-    window.customElements.define(GeniusmirrorApp.is, GeniusmirrorApp);
-  </script>
+        window.customElements.define(GeniusmirrorApp.is, GeniusmirrorApp);
+    </script>
 </dom-module>

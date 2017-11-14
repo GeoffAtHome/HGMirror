@@ -15,7 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 <dom-module id="zone-card">
-  <template>
+    <template>
       <style include="iron-flex iron-flex-alignment shared-styles">
        :host {
         display: block;
@@ -25,35 +25,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
     <div class="layout flex justify card">
       <h1>[[zone.name]]</h1>
-      <template is="dom-repeat" items="[[zone.devices]]" as="device">
-        <device-card device="[[device]]"></device-card>
+      <template is="dom-repeat" items="[[zone.nodes]]" as="node">
+        <device-card node="[[node]]"></device-card>
       </template>
-  </div>
+    </div>
     </template>
 
-  <script>
-    class ZoneCard extends Polymer.Element {
-      static get is() {
-        return 'zone-card';
-      }
+    <script>
+        class ZoneCard extends Polymer.Element {
+            static get is() {
+                return 'zone-card';
+            }
 
-      static get properties() {
-        return {
-          zone: {
-            type: Object,
-          }
-        };
-      }
-      dataChanged(newData, oldData) {
-        let deviceList = newData['devices'];
-        let devices = [];
-        for (var device in deviceList) {
-          devices.push(deviceList[device] );
+            static get properties() {
+                return {
+                    zone: Object
+                };
+            }
+
         }
-        this.devices = devices.sort((x, y) => x.type < y.type);
-      }
-    }
 
-    window.customElements.define(ZoneCard.is, ZoneCard);
-  </script>
+        window.customElements.define(ZoneCard.is, ZoneCard);
+    </script>
 </dom-module>

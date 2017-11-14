@@ -1,4 +1,4 @@
- <!--
+<!--
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -11,54 +11,61 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="battery-level.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="radiator-device">
-  <template>
+    <template>
     <style include="iron-flex iron-flex-alignment shared-styles">
     :host {
         display: block;
         padding: 5px;
     }
     </style>
+    <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
+    <app-indexeddb-mirror session="locations" key="[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
     <div class="horizontal layout">
         <div class="di">
             <iron-icon icon="my-icons:radiator"></iron-icon>
         </div>
         <div class="dl">
-            <battery-level level="[[device.Battery]]"></battery-level>
+            <battery-level level="[[reading.Battery]]"></battery-level>
         </div>
         <div class="dl">
             <iron-icon icon="my-icons:temperature"></iron-icon>[[temperature]]°
         </div>
     </div>
   </template>
-    
-  <script>
-    class RadiatorDevice extends Polymer.Element {
-      static get is() {
-        return 'radiator-device';
-      }
 
-      static get properties() {
-        return {
-          device: {
-            type: Object,
-            observer: 'dataChanged'
-            },
-            temperature: {
-                type: String
+    <script>
+        class RadiatorDevice extends Polymer.Element {
+            static get is() {
+                return 'radiator-device';
             }
-          }
-        };
 
-        dataChanged(newData, oldData) {
-            this.temperature = newData.HEATING_1.toFixed(1);
-        }
+            static get properties() {
+                return {
+                    node_id: String,
+                    temperature: String,
+                    persistedData: Object,
+                    reading: {
+                        type: Object,
+                        observer: 'dataChanged'
+
+                    }
+                };
+            }
+
+            dataChanged(newData, oldData) {
+                if (newData['HEATING_1'] != undefined) {
+                    this.temperature = newData['HEATING_1'].toFixed(1);
+                }
+            }
         }
 
-    window.customElements.define(RadiatorDevice.is, RadiatorDevice);
-  </script>
+        window.customElements.define(RadiatorDevice.is, RadiatorDevice);
+    </script>
 </dom-module>
