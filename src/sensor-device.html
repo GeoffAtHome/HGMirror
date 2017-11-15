@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <battery-level level="[[persistedData.Battery]]"></battery-level>
         </div>
         <div style="width: 75px">
-            <iron-icon icon="my-icons:temperature"></iron-icon>[[temperature]]°
+            <iron-icon icon="my-icons:temperature"></iron-icon>[[getTemperature(persistedData.TEMPERATURE)]]
         </div>
         <div style="width: 50px">
             <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
@@ -60,19 +60,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             static get properties() {
                 return {
                     node_id: String,
-                    temperature: String,
                     persistedData: Object,
-                    reading: {
-                        type: Object,
-                        observer: 'dataChanged'
-
-                    }
+                    reading: Object
+                    };
                 }
-            };
 
-            dataChanged(newData, oldData) {
-                if (newData['TEMPERATURE'] != undefined) {
-                    this.temperature = newData['TEMPERATURE'].toFixed(1);
+            getTemperature(value) {
+                if(value != undefined) {
+                    return value.toFixed(1) + '°';
                 }
             }
         }
