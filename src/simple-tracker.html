@@ -1,0 +1,142 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<dom-module id="simple-tracker">
+    <template>
+    <style include="shared-styles">
+       :host {
+        display: none;
+      }
+    </style>
+  </template>
+
+    <script>
+        class SimpleTracker extends Polymer.Element {
+            static get is() {
+                return 'simple-tracker';
+            }
+
+            static get properties() {
+                return {
+                    /**
+                     * Global flag if Google Analytics was initialized.
+                     * Although multiple elements might use this behavior, GA should be initialized
+                     * only once.
+                     * @type {Boolean}
+                     */
+                    gaInitialized: {
+                        type: Boolean,
+                        value: false
+                    },
+                    accountId: {
+                        type: String,
+                        observer: 'dataChanged'
+                    }
+                }
+            }
+
+            dataChanged(newData, oldData) {
+                if (newData != undefined && this.gaInitialized == false) {
+                    this.gaCreate(newData);
+                }
+            }
+
+            /**
+             * Create a new Google Analytics tracker
+             * <ul>
+             *   <li>Prepares for cross-domain tracking: https://developers.google.com/analytics/devguides/collection/analyticsjs/linker</li>
+             *   <li>IP addresses are anonymized: https://developers.google.com/analytics/devguides/collection/analyticsjs/ip-anonymization</li>
+             * </ul>
+             */
+            gaCreate(accountId) {
+                // Load Google Analytics code
+                (function(i, s, o, g, r, a, m) {
+                    i['GoogleAnalyticsObject'] = r;
+                    i[r] = i[r] || function() {
+                        (i[r].q = i[r].q || []).push(arguments)
+                    }, i[r].l = 1 * new Date();
+                    a = s.createElement(o),
+                        m = s.getElementsByTagName(o)[0];
+                    a.async = 1;
+                    a.src = g;
+                    m.parentNode.insertBefore(a, m)
+                })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+                this.gaInitialized = true;
+
+                ga('create', accountId, 'auto', {
+                    allowLinker: true,
+                    anonymizeIp: true
+                });
+            }
+
+            /**
+             * Sets the domain name for cross-domain tracking
+             *
+             * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/linker
+             */
+            gaSetDomainName(domainName) {
+                if (!this.gaInitialized) {
+                    throw new Error('Google Analytics is not initialized. Call first gaCreate()');
+                }
+
+                ga('require', 'linker');
+                ga('linker:autoLink', [domainName]);
+            }
+
+            /**
+             * Set a dimension to specific value
+             *
+             * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/custom-dims-mets
+             */
+            gaSetDimension(dimension, value) {
+                if (!this.gaInitialized) {
+                    throw new Error('Google Analytics is not initialized. Call first gaCreate()');
+                }
+
+                ga('set', dimension, value);
+            }
+
+            /**
+             * Tracks a page view
+             *
+             * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/linker
+             */
+            gaTrackPageView(url) {
+                if (!this.gaInitialized) {
+                    throw new Error('Google Analytics is not initialized. Call first gaCreate()');
+                }
+
+                ga('send', 'pageview', url);
+            }
+
+            /**
+             * Informs GA about the user ID of the viewer
+             *
+             * @param  {String} userId ID of the viewer
+             *
+             * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/cookies-user-id
+             */
+            gaSetUserId(userId) {
+                if (!this.gaInitialized) {
+                    throw new Error('Google Analytics is not initialized. Call first gaCreate()');
+                }
+
+                ga('set', 'userId', userId);
+            }
+
+            /**
+             * Tracks an event
+             *
+             * @see https://developers.google.com/analytics/devguides/collection/analyticsjs/events
+             */
+            gaTrackEvent(category, action, label, value) {
+                if (!this.gaInitialized) {
+                    throw new Error('Google Analytics is not initialized. Call first gaCreate()');
+                }
+
+                ga('send', 'event', category, action, label, value);
+            }
+        }
+
+        window.customElements.define(SimpleTracker.is, SimpleTracker);
+    </script>
+</dom-module>

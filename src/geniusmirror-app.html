@@ -22,7 +22,7 @@
     </firebase-app>
     <firebase-document id="location" path="/data" data="{{data}}"></firebase-document>
     <app-indexeddb-mirror session="locations" key="data" data="{{data}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-
+    
     <div class="layout center-justified horizontal wrap">
       <template is="dom-repeat" items="[[persistedData.zones]]" as="zone">
         <zone-card zone="[[zone]]"></zone-card>
@@ -42,7 +42,8 @@
             static get properties() {
                 return {
                     data: Object,
-                    persistedData: Object
+                    persistedData: Object,
+                    initialized: Object
                 };
             }
         }
