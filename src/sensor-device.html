@@ -42,10 +42,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
         </div>
         <div style="width: 60px">
-            <iron-icon icon="my-icons:luminance"></iron-icon> [[persistedData.LUMINANCE]]
+            <iron-icon icon="my-icons:luminance"></iron-icon>[[persistedData.LUMINANCE]]
         </div>
         <div style="width: 50px">
-            <iron-icon icon="my-icons:visibility"></iron-icon> [[persistedData.Motion]]
+            <iron-icon id="icon"></iron-icon>[[setMotion(persistedData.Motion)]]
         </div>
 
     </div>
@@ -62,13 +62,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     node_id: String,
                     persistedData: Object,
                     reading: Object
-                    };
-                }
+                };
+            }
 
             getTemperature(value) {
-                if(value != undefined) {
+                if (value != undefined) {
                     return value.toFixed(1) + '°';
                 }
+            }
+
+            setMotion(value) {
+                var icon = "unoccuppied";
+
+                if (value > 0) {
+                    icon = "occuppied"
+                }
+                this.$.icon.setAttribute('icon', "my-icons:" + icon);
             }
         }
 
