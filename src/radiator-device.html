@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-indexeddb-mirror session="locations" key="/rad/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
     <div class="horizontal layout">
         <div style="width: 10px">
-            <iron-icon icon="my-icons:radiator"></iron-icon>
+            <iron-icon on$="[[getRadiatorState(on)]]" icon="my-icons:radiator"></iron-icon>
         </div>
         <div style="width: 96px">
             <battery-level level="[[persistedData.Battery]]"></battery-level>
@@ -52,17 +52,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
+                    on: Boolean,
                     node_id: String,
                     persistedData: Object,
                     reading: Object
-                    }
-                };
+                }
+            };
 
             getTemperature(value) {
-                if(value != undefined) {
+                if (value != undefined) {
                     return value.toFixed(1) + '°';
                 }
             }
+
+            getRadiatorState(value) {
+                if (value != undefined) {
+                    if (value) {
+                        return "on";
+                    }
+                }
+            }
+
         }
 
         window.customElements.define(RadiatorDevice.is, RadiatorDevice);

@@ -24,9 +24,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
     <div class="layout flex justify card">
-      <h1>[[zone.name]]</h1>
+      <h1 on$="[[getZoneState(zone.bOutRequestHeat)]]">[[zone.name]]</h1>
       <template is="dom-repeat" items="[[zone.nodes]]" as="node">
-        <device-card node="[[node]]"></device-card>
+        <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
       </template>
     </div>
     </template>
@@ -41,6 +41,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return {
                     zone: Object
                 };
+            }
+            getZoneState(value) {
+                if (value != undefined) {
+                    if (value) {
+                        return "on";
+                    }
+                }
             }
 
         }

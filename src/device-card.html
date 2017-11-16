@@ -27,7 +27,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <switch-device node_id="[[node.node_id]]"></switch-device>
       </template>
     <template is="dom-if" if="{{radiator}}">
-        <radiator-device node_id="[[node.node_id]]"></radiator-device>
+        <radiator-device on="[[on]]" node_id="[[node.node_id]]"></radiator-device>
       </template>
     <template is="dom-if" if="{{sensor}}">
         <sensor-device node_id="[[node.node_id]]"></sensor-device>
@@ -42,6 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
+                    on: Boolean,
                     node: {
                         type: Object,
                         observer: 'dataChanged'
