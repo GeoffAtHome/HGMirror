@@ -36,13 +36,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <battery-level level="[[persistedData.Battery]]"></battery-level>
         </div>
         <div class="c3" >
-            <iron-icon icon="my-icons:temperature"></iron-icon>[[getTemperature(persistedData.TEMPERATURE)]]
+            <iron-icon icon="my-icons:temperature"></iron-icon><span>[[getTemperature(persistedData.TEMPERATURE)]]</span>
         </div>
         <div class="c4" >
             <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
         </div>
         <div class="c5" >
-            <iron-icon icon="my-icons:luminance"></iron-icon>[[persistedData.LUMINANCE]]
+            <iron-icon icon="my-icons:luminance"></iron-icon><span>[[persistedData.LUMINANCE]]</span>
         </div>
         <div class="c6" >
             <iron-icon id="icon"></iron-icon>[[setMotion(persistedData.Motion)]]

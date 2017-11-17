@@ -14,6 +14,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="shared-styles">
     <template>
     <style>
+      .title {
+        width: 100%;
+        margin: 0;
+        background-color: lightcoral;
+        color: white;
+        font-size: 30px;
+        text-align: center;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        text-align: right;
+        padding-right: 10px;
+      }
+      
       .card {
         width: 310px;
         height: 150px;
@@ -69,7 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding-top: 20px;
         font-size: 50px;
       }
-      
+
       iron-icon {
         padding-left: 10px;
         padding-right: 0;
@@ -78,7 +93,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       iron-icon[on] {
         --iron-icon-fill-color: orange;
       }
-      
+
+      span {
+        vertical-align: middle;
+      }      
     </style>
   </template>
 </dom-module>

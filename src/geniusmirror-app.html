@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="title-card.html">
 <link rel="import" href="zone-card.html">
 
 <dom-module id="geniusmirror-app">
@@ -22,7 +23,7 @@
     </firebase-app>
     <firebase-document id="location" path="/data" data="{{data}}"></firebase-document>
     <app-indexeddb-mirror session="locations" key="data" data="{{data}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-    
+    <title-card data="[[data]]"></title-card>
     <div class="layout center-justified horizontal wrap">
       <template is="dom-repeat" items="[[persistedData.zones]]" as="zone">
         <zone-card zone="[[zone]]"></zone-card>

@@ -1,0 +1,71 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="device-card.html">
+<link rel="import" href="shared-styles.html">
+
+
+<dom-module id="title-card">
+    <template>
+      <style include="iron-flex iron-flex-alignment shared-styles">
+       :host {
+        display: block;
+      }
+
+    </style>
+      <div class="layout center-justified horizontal center title">
+          <div class="layout flex">Genius Mirror</div>
+          <div class"layout flex right-justified vertical">
+            <div class="subtitle">Daily: [[getDaily(data.tmBoilerDaily)]]</div>
+            <div class="subtitle">Weekly: [[getWeekly(data.tmBoilerWeekly)]]</div>
+          </div>
+      </div>
+    </template>
+
+    <script>
+        class TitleCard extends Polymer.Element {
+            static get is() {
+                return 'title-card';
+            }
+
+            static get properties() {
+                return {
+                    data: Object
+                };
+            }
+
+            getDaily(value) {
+                let delta = new Date(value * 1000);
+                let minutes = delta.getMinutes();
+                let seconds = delta.getSeconds();
+                let lmz = minutes < 10 ? '0' : '';
+                let lsz = seconds < 10 ? '0' : '';
+                return lmz + minutes + ":" + lsz + seconds;
+            }
+
+            getWeekly(value) {
+                let delta = new Date(value * 1000);
+                let hours = delta.getHours();
+                let days = Math.floor(hours / 24);
+
+                let minutes = delta.getMinutes();
+                let seconds = delta.getSeconds();
+                let lhz = hours < 10 ? '0' : '';
+                let lmz = minutes < 10 ? '0' : '';
+                let lsz = seconds < 10 ? '0' : '';
+                return days + " " + lhz + hours + ":" + lmz + minutes + ":" + lsz + seconds;
+            }
+        }
+
+        window.customElements.define(TitleCard.is, TitleCard);
+    </script>
+</dom-module>
