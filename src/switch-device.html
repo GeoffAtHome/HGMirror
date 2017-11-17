@@ -20,14 +20,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <style include="shared-styles">
       :host {
           display: block;
-          text-align: center;
-          color: black;
-          font-size: 40px;
       }
       </style>
       <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
       <app-indexeddb-mirror session="locations" key="/switch/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-      <div class="">[[getState(persistedData.SwitchBinary)]]</div>
+      <div class="s1">[[getState(persistedData.SwitchBinary)]]</div>
     </template>
 
     <script>
@@ -42,11 +39,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     state: String,
                     persistedData: Object,
                     reading: Object
-                    }
-                };
+                }
+            };
 
             getState(value) {
-                if(value != undefined) {
+                if (value != undefined) {
                     if (value == 1) {
                         return 'ON';
                     }

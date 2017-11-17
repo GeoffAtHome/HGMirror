@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
     <div class="layout flex justify card">
-      <h1 on$="[[getZoneState(zone.bOutRequestHeat)]]">[[zone.name]]</h1>
+      <div class="header" on$="[[getZoneState(zone.bOutRequestHeat)]]">[[zone.name]]</div>
       <template is="dom-repeat" items="[[zone.nodes]]" as="node">
         <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
       </template>

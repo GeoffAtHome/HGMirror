@@ -29,16 +29,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
     <app-indexeddb-mirror session="locations" key="/rad/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
     <div class="horizontal layout">
-        <div style="width: 10px">
+        <div class="c1" >
             <iron-icon on$="[[getRadiatorState(on)]]" icon="my-icons:radiator"></iron-icon>
         </div>
-        <div style="width: 96px">
+        <div class="c2" >
             <battery-level level="[[persistedData.Battery]]"></battery-level>
         </div>
-        <div style="width: 75px">
+        <div class="c3" >
             <iron-icon icon="my-icons:temperature"></iron-icon>[[getTemperature(persistedData.HEATING_1)]]
         </div>
-        <div style="width: 50px">
+        <div class="c4" >
             <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
         </div>
     </div>
