@@ -22,12 +22,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     </style>
-      <div class="layout center-justified horizontal center title">
-          <div class="layout flex">Genius Mirror</div>
-          <div class"layout flex right-justified vertical">
-            <div class="subtitle">Daily: [[getDaily(data.tmBoilerDaily)]]</div>
-            <div class="subtitle">Weekly: [[getWeekly(data.tmBoilerWeekly)]]</div>
-          </div>
+      <div class="title">
+          <div class="flex vertical">Genius Mirror</div>
+          <div>
+            <div class="subtitle">Daily: [[getTimeString(data.tmBoilerDaily)]]</div>
+            <div class="subtitle">Weekly: [[getTimeString(data.tmBoilerWeekly)]]</div>
+        </div>
       </div>
     </template>
 
@@ -43,26 +43,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
             }
 
-            getDaily(value) {
-                let delta = new Date(value * 1000);
-                let minutes = delta.getMinutes();
-                let seconds = delta.getSeconds();
-                let lmz = minutes < 10 ? '0' : '';
-                let lsz = seconds < 10 ? '0' : '';
-                return lmz + minutes + ":" + lsz + seconds;
-            }
+            getTimeString(value) {
+                if (value != undefined) {
+                    let delta = new Date(value * 1000);
+                    let hours = delta.getHours();
+                    let days = Math.floor(hours / 24);
 
-            getWeekly(value) {
-                let delta = new Date(value * 1000);
-                let hours = delta.getHours();
-                let days = Math.floor(hours / 24);
-
-                let minutes = delta.getMinutes();
-                let seconds = delta.getSeconds();
-                let lhz = hours < 10 ? '0' : '';
-                let lmz = minutes < 10 ? '0' : '';
-                let lsz = seconds < 10 ? '0' : '';
-                return days + " " + lhz + hours + ":" + lmz + minutes + ":" + lsz + seconds;
+                    let minutes = delta.getMinutes();
+                    let seconds = delta.getSeconds();
+                    let lhz = hours < 10 ? '0' : '';
+                    let lmz = minutes < 10 ? '0' : '';
+                    if (days != 0) {
+                        return days + " " + lhz + hours + ":" + lmz + minutes;
+                    }
+                    return lhz + hours + ":" + lmz + minutes;
+                }
             }
         }
 
