@@ -17,8 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
     <style include="shared-styles">
        :host {
-        display: inline;
-        padding: 10px;
+        display: block;
       }
     </style>
     [[value]]
@@ -56,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 let seconds = delta.getSeconds();
                 let lmz = minutes < 10 ? '0' : '';
                 let lsz = seconds < 10 ? '0' : '';
-                this.value = lmz + minutes + ":" + lsz + seconds;
+                this.value = "  " + lmz + minutes + ":" + lsz + seconds + "  ";
             }
 
         }

@@ -14,7 +14,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="battery-level.html">
+<link rel="import" href="temperature-level.html">
+<link rel="import" href="luminance-level.html">
 <link rel="import" href="last-seen.html">
+<link rel="import" href="motion-level.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -23,31 +26,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="iron-flex iron-flex-alignment shared-styles">
     :host {
         display: block;
-        padding: 5px;
       }
     </style>
     <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
     <app-indexeddb-mirror session="locations" key="/sensor/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-    <div class="horizontal layout">
-        <div class="c1" >
-            <iron-icon icon="my-icons:sensor"></iron-icon>
-        </div>
-        <div class="c2" >
-            <battery-level level="[[persistedData.Battery]]"></battery-level>
-        </div>
-        <div class="c3" >
-            <iron-icon icon="my-icons:temperature"></iron-icon><span>[[getTemperature(persistedData.TEMPERATURE)]]</span>
-        </div>
-        <div class="c4" >
-            <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
-        </div>
-        <div class="c5" >
-            <iron-icon icon="my-icons:luminance"></iron-icon><span>[[persistedData.LUMINANCE]]</span>
-        </div>
-        <div class="c6" >
-            <iron-icon id="icon"></iron-icon>[[setMotion(persistedData.Motion)]]
-        </div>
-
+    <div class="layout horizontal start">
+        <iron-icon icon="my-icons:sensor"></iron-icon>
+        <battery-level level="[[persistedData.Battery]]"></battery-level>
+        <temperature-level level="[[persistedData.TEMPERATURE]]"></temperature-level>
+        <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
+        <luminance-level level="[[persistedData.LUMINANCE]]"></luminance-level>
+        <motion-level level="[[persistedData.Motion]]"></motion-level>
     </div>
 </template>
 
@@ -63,21 +52,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     persistedData: Object,
                     reading: Object
                 };
-            }
-
-            getTemperature(value) {
-                if (value != undefined) {
-                    return value.toFixed(1) + '°';
-                }
-            }
-
-            setMotion(value) {
-                var icon = "unoccuppied";
-
-                if (value > 0) {
-                    icon = "occuppied"
-                }
-                this.$.icon.setAttribute('icon', "my-icons:" + icon);
             }
         }
 

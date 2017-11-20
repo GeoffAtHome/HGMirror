@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="battery-level.html">
+<link rel="import" href="temperature-level.html">
 <link rel="import" href="last-seen.html">
 <link rel="import" href="shared-styles.html">
 
@@ -23,24 +24,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="iron-flex iron-flex-alignment shared-styles">
     :host {
         display: block;
-        padding: 5px;
     }
     </style>
     <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
     <app-indexeddb-mirror session="locations" key="/rad/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-    <div class="horizontal layout">
-        <div class="c1" >
-            <iron-icon on$="[[getRadiatorState(on)]]" icon="my-icons:radiator"></iron-icon>
-        </div>
-        <div class="c2" >
-            <battery-level level="[[persistedData.Battery]]"></battery-level>
-        </div>
-        <div class="c3" >
-            <iron-icon icon="my-icons:temperature"></iron-icon><span>[[getTemperature(persistedData.HEATING_1)]]</span>
-        </div>
-        <div class="c4" >
-            <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
-        </div>
+    <div class="layout horizontal start">
+        <iron-icon on$="[[getRadiatorState(on)]]" icon="my-icons:radiator"></iron-icon>
+        <battery-level level="[[persistedData.Battery]]"></battery-level>
+        <temperature-level level="[[persistedData.HEATING_1]]"></temperature-level>
+        <last-seen lastseen="[[persistedData.lastseen]]"></last-seen>
     </div>
   </template>
 
@@ -58,12 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     reading: Object
                 }
             };
-
-            getTemperature(value) {
-                if (value != undefined) {
-                    return value.toFixed(1) + '°';
-                }
-            }
 
             getRadiatorState(value) {
                 if (value != undefined) {

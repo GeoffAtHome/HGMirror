@@ -17,10 +17,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
     <style include="shared-styles">
        :host {
-        display: inline;
+        display: block;
       }
     </style>
-    <iron-icon id="icon"></iron-icon><span>[[level]]%</span>
+    <iron-icon id="icon"></iron-icon><span>[[getLevel(level)]]</span>
   </template>
 
     <script>
@@ -31,29 +31,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
-                    level: {
-                        type: Number,
-                        observer: 'dataChanged'
-                    }
+                    level: Number
                 }
-            };
+            }
 
-            dataChanged(newData, oldData) {
+            getLevel(level) {
                 var value = "";
 
-                if (newData > 90) {
+                if (level > 90) {
                     value = "battery-full"
-                } else if (newData > 80) {
+                } else if (level > 80) {
                     value = "battery-90"
-                } else if (newData > 60) {
+                } else if (level > 60) {
                     value = "battery-80"
-                } else if (newData > 50) {
+                } else if (level > 50) {
                     value = "battery-60"
-                } else if (newData > 30) {
+                } else if (level > 30) {
                     value = "battery-50"
-                } else if (newData > 20) {
+                } else if (level > 20) {
                     value = "battery-30"
-                } else if (newData > 10) {
+                } else if (level > 10) {
                     value = "battery-20"
                 } else {
                     value = "battery-alert"
@@ -61,9 +58,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (value != "") {
                     this.$.icon.setAttribute('icon', "my-icons:" + value);
                 }
+
+                var spaces = ""
+                if (level < 10) {
+                    spaces = "    ";
+                } else if (level < 100) {
+                    spaces = "  ";
+                }
+
+                return spaces + level + "%";
             }
         }
 
         window.customElements.define(BatteryLevel.is, BatteryLevel);
     </script>
-</dom-module>
+</dom-module> @apply(--layout-flex);
