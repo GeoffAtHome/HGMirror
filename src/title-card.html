@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     </style>
-      <div class="title">
+      <div class="title" stale$="[[stale]]" x$="[[getStale(data.timestamp)]]">
           <div class="flex vertical">Genius Mirror</div>
           <div>
             <div class="subtitle">Daily: [[getTimeString(data.tmBoilerDaily)]]</div>
@@ -39,7 +39,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get properties() {
                 return {
-                    data: Object
+                    data: Object,
+                    timer: Number,
+                    stale: Boolean
                 };
             }
 
@@ -59,6 +61,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     return lhz + hours + ":" + lmz + minutes;
                 }
             }
+
+            getStale(timestamp) {
+                if (timestamp != undefined) {
+                    if (this.timer != undefined) {
+                        clearInterval(this.timer);
+                        this.update(false);
+                    }
+                    this.timer = setInterval(() => this.update(true), this.data.interval * 1000);
+                }
+            }
+
+            update(value) {
+                this.stale = value;
+            }
+
+            isPageStale(value) {
+                if (value != undefined && value) {
+                    return "stale";
+                }
+            }
+            
         }
 
         window.customElements.define(TitleCard.is, TitleCard);
