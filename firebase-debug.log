@@ -1,0 +1,31 @@
+[debug] [2017-11-26T18:57:20.551Z] ----------------------------------------------------------------------
+[debug] [2017-11-26T18:57:20.553Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\geoff\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase deploy
+[debug] [2017-11-26T18:57:20.553Z] CLI Version:   3.15.0
+[debug] [2017-11-26T18:57:20.553Z] Platform:      win32
+[debug] [2017-11-26T18:57:20.553Z] Node Version:  v7.9.0
+[debug] [2017-11-26T18:57:20.554Z] Time:          Sun Nov 26 2017 18:57:20 GMT+0000 (GMT Standard Time)
+[debug] [2017-11-26T18:57:20.554Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-11-26T18:57:20.570Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-11-26T18:57:20.571Z] > authorizing via signed-in user
+[debug] [2017-11-26T18:57:20.572Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-11-26T18:57:20.573Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/Ax_ahCqXYzljmYB5GZx_dD4F86x1E0jX1zE1S-6tYQs',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Sun Nov 26 2017 18:57:20 GMT+0000 (GMT Standard Time)
+[debug] [2017-11-26T18:57:20.775Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-26T18:57:20.787Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/heatgeniusmirror  
+ Sun Nov 26 2017 18:57:20 GMT+0000 (GMT Standard Time)
+[debug] [2017-11-26T18:57:21.464Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-26T18:57:21.465Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/heatgeniusmirror/tokens  
+ Sun Nov 26 2017 18:57:21 GMT+0000 (GMT Standard Time)
+[debug] [2017-11-26T18:57:22.297Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'heatgeniusmirror'...
+[info] 
+[info] i  deploying hosting
+[info] i  hosting: preparing build/es6-unbundled directory for upload...
+[debug] [2017-11-26T18:57:23.666Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/heatgeniusmirror/uploads/-KztgE-fAA8Ah6g5mk-S?fileCount=100&message=  
+ Sun Nov 26 2017 18:57:23 GMT+0000 (GMT Standard Time)
