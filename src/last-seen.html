@@ -20,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
-    [[value]]
+    <div class="lastseen" late$="[[late]]">[[value]]</div>
   </template>
 
     <script>
@@ -34,6 +34,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     lastseen: {
                         type: Number,
                         observer: 'dataChanged'
+                    },
+                    late: {
+                        type: Boolean,
+                        value: false
                     },
                     value: String,
                     timer: Number
@@ -51,11 +55,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             update(value) {
                 let delta = new Date(new Date() - value * 1000);
+                let hours = delta.getHours();
                 let minutes = delta.getMinutes();
                 let seconds = delta.getSeconds();
                 let lmz = minutes < 10 ? '0' : '';
                 let lsz = seconds < 10 ? '0' : '';
                 this.value = "  " + lmz + minutes + ":" + lsz + seconds + "  ";
+
+                // Indicate that the reading is old that 45 minutes
+                if (hours != 0 || minutes > 35) {
+                    this.late = true;
+                } else {
+                    this.late = false;
+                }
+                
             }
 
         }
