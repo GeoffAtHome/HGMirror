@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
@@ -17,14 +18,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="switch-device">
     <template>
-      <style include="shared-styles">
-      :host {
-          display: block;
-      }
-      </style>
-      <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
-      <app-indexeddb-mirror session="locations" key="/switch/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
-      <div class="s1">[[getState(persistedData.SwitchBinary)]]</div>
+        <style include="shared-styles iron-flex iron-flex-alignment ">
+             :host {
+                display: inline-block;
+                font-size: 50px;
+                padding-top: 20px;
+                width: 100%;
+                text-align: center;
+            }
+        </style>
+        <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
+        <app-indexeddb-mirror session="locations" key="/switch/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+        <span>[[getState(persistedData.SwitchBinary)]]</span>
     </template>
 
     <script>

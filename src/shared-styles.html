@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <!-- shared styles for all views -->
 <dom-module id="shared-styles">
-    <template>
+  <template>
     <style>
       .title {
         width: 100%;
@@ -21,8 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: white;
         font-size: 30px;
         text-align: center;
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+        @apply --layout-horizontal;
+        @apply --layout-center;
       }
 
       .title[stale] {
@@ -34,7 +34,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-align: right;
         padding-right: 10px;
       }
-      
+
       .card {
         width: 310px;
         height: 150px;
@@ -61,24 +61,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: orange;
       }
 
-      .s1 {
-        text-align: center;
-        padding-top: 20px;
-        font-size: 50px;
-      }
-
-      iron-icon {
-        padding-left: 0;
-        padding-right: 0;
-      }
-
       iron-icon[on] {
         --iron-icon-fill-color: orange;
       }
-
-      span {
-        vertical-align: middle;
-      }      
     </style>
   </template>
 </dom-module>

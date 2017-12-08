@@ -10,25 +10,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="zone-header.html">
 <link rel="import" href="device-card.html">
 <link rel="import" href="shared-styles.html">
 
 
 <dom-module id="zone-card">
     <template>
-      <style include="iron-flex iron-flex-alignment shared-styles">
-       :host {
-        display: block;
-        padding: 10px;
-      }
-
-    </style>
-    <div class="layout flex justify card">
-      <div class="header" on$="[[getZoneState(zone.bOutRequestHeat)]]">[[zone.name]]</div>
-      <template is="dom-repeat" items="[[zone.nodes]]" as="node">
-        <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
-      </template>
-    </div>
+        <style include="iron-flex iron-flex-alignment shared-styles">
+             :host {
+                display: inline-block;
+                padding: 10px;
+            }
+        </style>
+        <div class="card">
+            <zone-header mode$="[[zone.iMode]]" boost$="[[iBoostTimeRemaining]]" name="[[zone.name]]"></zone-header>
+            <template is="dom-repeat" items="[[zone.nodes]]" as="node">
+                <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
+            </template>
+        </div>
     </template>
 
     <script>

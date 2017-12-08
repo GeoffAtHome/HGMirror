@@ -10,46 +10,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="my-icons.html">
+<link rel="import" href="device-card.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="motion-level">
+
+<dom-module id="zone-header">
     <template>
         <style include="iron-flex iron-flex-alignment shared-styles">
              :host {
                 display: inline-block;
-                width: 33px;
+                width: 100%;
             }
         </style>
-        <div class="layout horizontal end-justified">
-            <span>
-                <iron-icon id="icon"></iron-icon>[[setMotion(level)]]</span>
-        </div>
+        <div class="header">[[name]]</div>
     </template>
 
     <script>
-        class MotionLevel extends Polymer.Element {
+        class ZoneHeader extends Polymer.Element {
             static get is() {
-                return 'motion-level';
+                return 'zone-header';
             }
 
             static get properties() {
                 return {
-                    level: Number
+                    mode: Number,
+                    boost: Number,
+                    name: String
+                };
+            }
+            getZoneState(value) {
+                if (value != undefined && value) {
+                    return "on";
                 }
             }
 
-            setMotion(value) {
-                var icon = "unoccuppied";
-
-                if (value > 0) {
-                    icon = "occuppied"
-                }
-                this.$.icon.setAttribute('icon', "my-icons:" + icon);
-            }
         }
 
-        window.customElements.define(MotionLevel.is, MotionLevel);
+        window.customElements.define(ZoneHeader.is, ZoneHeader);
     </script>
 </dom-module>

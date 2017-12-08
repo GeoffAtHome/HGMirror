@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="radiator-device.html">
 <link rel="import" href="switch-device.html">
@@ -17,21 +18,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="device-card">
     <template>
-      <style include="shared-styles">
-      :host {
-          display: block;
-          width: 100%;
-      }
-      </style>
-      <template is="dom-if" if="{{onoff}}">
-        <switch-device node_id="[[node.node_id]]"></switch-device>
-      </template>
-    <template is="dom-if" if="{{radiator}}">
-        <radiator-device on="[[on]]" node_id="[[node.node_id]]"></radiator-device>
-      </template>
-    <template is="dom-if" if="{{sensor}}">
-        <sensor-device node_id="[[node.node_id]]"></sensor-device>
-      </template>
+        <style include="iron-flex iron-flex-alignment shared-styles">
+             :host {
+                display: inline-block;
+                width: 100%;
+            }
+        </style>
+        <template is="dom-if" if="{{onoff}}">
+            <switch-device node_id="[[node.node_id]]"></switch-device>
+        </template>
+        <template is="dom-if" if="{{radiator}}">
+            <radiator-device on="[[on]]" node_id="[[node.node_id]]"></radiator-device>
+        </template>
+        <template is="dom-if" if="{{sensor}}">
+            <sensor-device node_id="[[node.node_id]]"></sensor-device>
+        </template>
     </template>
 
     <script>

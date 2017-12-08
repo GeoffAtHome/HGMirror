@@ -9,19 +9,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="battery-level">
     <template>
-    <style include="shared-styles">
-       :host {
-        display: block;
-      }
-    </style>
-    <iron-icon id="icon"></iron-icon><span>[[getLevel(level)]]</span>
-  </template>
+        <style include="iron-flex iron-flex-alignment shared-styles">
+             :host {
+                display: inline-block;
+                width: 65px;
+            }
+        </style>
+        <div class="layout horizontal justified">
+            <iron-icon id="icon"></iron-icon>
+            <span>[[getLevel(level)]]</span>
+        </div>
+    </template>
 
     <script>
         class BatteryLevel extends Polymer.Element {
@@ -58,15 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (value != "") {
                     this.$.icon.setAttribute('icon', "my-icons:" + value);
                 }
-
-                var spaces = ""
-                if (level < 10) {
-                    spaces = "    ";
-                } else if (level < 100) {
-                    spaces = "  ";
-                }
-
-                return spaces + level + "%";
+                return level + "%";
             }
         }
 

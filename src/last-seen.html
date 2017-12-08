@@ -9,19 +9,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="last-seen">
     <template>
-    <style include="shared-styles">
-       :host {
-        display: block;
-      }
-    </style>
-    [[value]]
-  </template>
+        <style include="iron-flex iron-flex-alignment shared-styles">
+             :host {
+                display: inline-block;
+                width: 65px;
+            }
+        </style>
+        [[value]]
+    </template>
 
     <script>
         class LastSeen extends Polymer.Element {

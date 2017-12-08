@@ -9,18 +9,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="temperature-level">
     <template>
-        <style include="shared-styles">
-        :host {
-            display: block;
-        }
+        <style include="shared-styles iron-flex iron-flex-alignment">
+             :host {
+                display: inline-block;
+                width: 65px;
+            }
         </style>
-        <iron-icon icon="my-icons:temperature"></iron-icon><span>[[getTemperature(level)]]</span>
+        <div class="layout horizontal justified">
+            <iron-icon icon="my-icons:temperature"></iron-icon>
+            <span>[[getTemperature(level)]]</span>
+        </div>
     </template>
 
     <script>
@@ -37,13 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             getTemperature(value) {
                 if (value != undefined) {
-                    var spaces = ""
-                    if (value < 10) {
-                        spaces = "    ";
-                    } else if (value < 100) {
-                        spaces = "  ";
-                    }
-                    return spaces + value.toFixed(1) + '° ';
+                    return value.toFixed(1) + '° ';
                 }
             }
         }
