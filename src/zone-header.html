@@ -20,9 +20,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              :host {
                 display: inline-block;
                 width: 100%;
+                margin: 0px;
+                width: 100%;
+                height: 28px;
+                color: white;
+                background-color: lightcoral;
+                font-size: 20px;
+                border-radius: 5px 5px 0 0;
+                box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+            }
+
+             :host[on] {
+                background-color: orange;
             }
         </style>
-        <div class="header">[[name]]</div>
+        <div class="layout horizontal justified center">
+            <div> </div>
+            <div class="header">[[name]]</div>
+            <div>
+                <iron-icon icon="my-icons:feet"></iron-icon>
+            </div>
+        </div>
     </template>
 
     <script>
@@ -35,15 +53,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return {
                     mode: Number,
                     boost: Number,
-                    name: String
+                    name: String,
                 };
             }
-            getZoneState(value) {
-                if (value != undefined && value) {
-                    return "on";
-                }
-            }
-
         }
 
         window.customElements.define(ZoneHeader.is, ZoneHeader);

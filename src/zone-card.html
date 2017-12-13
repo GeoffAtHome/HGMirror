@@ -24,7 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
         <div class="card">
-            <zone-header mode$="[[zone.iMode]]" boost$="[[iBoostTimeRemaining]]" name="[[zone.name]]"></zone-header>
+            <zone-header mode$="[[zone.iMode]]" boost$="[[zone.iBoostTimeRemaining]]" on$="[[getZoneState(zone.bOutRequestHeat)]]" name="[[zone.name]]"></zone-header>
             <template is="dom-repeat" items="[[zone.nodes]]" as="node">
                 <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
             </template>
