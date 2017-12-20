@@ -10,8 +10,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="zone-header.html">
 <link rel="import" href="device-card.html">
+<link rel="import" href="time-zone.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -22,8 +25,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 display: inline-block;
                 padding: 10px;
             }
+
+            paper-dialog {
+                width: 80%;
+                height: 80%;
+            }
         </style>
-        <div class="card">
+        <paper-dialog id="dialog">
+            <h2>[[zone.name]]</h2>
+            <paper-dialog-scrollable>
+                <time-zone data="[[zone.objTimer]]"></time-zone>
+            </paper-dialog-scrollable>
+        </paper-dialog>
+
+        <div class="card" on-click="clickHandler">
             <zone-header mode$="[[zone.iMode]]" boost$="[[zone.iBoostTimeRemaining]]" on$="[[getZoneState(zone.bOutRequestHeat)]]" name="[[zone.name]]"></zone-header>
             <template is="dom-repeat" items="[[zone.nodes]]" as="node">
                 <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
@@ -47,7 +62,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     return "on";
                 }
             }
-
+            clickHandler() {
+                console.log("Clicked");
+                this.$.dialog.open();
+            }
         }
 
         window.customElements.define(ZoneCard.is, ZoneCard);

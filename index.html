@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // Load and register pre-caching Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
+            window.addEventListener('load', function () {
                 navigator.serviceWorker.register('service-worker.js', {
                     scope: Polymer.rootPath,
                 });
@@ -82,19 +82,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- Load your application shell -->
     <link rel="import" href="src/geniusmirror-app.html">
     <script>
-        (function() {
+        (function () {
             'use strict';
 
             if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
                 return;
             }
 
-            window.ga = window.ga || function() {
+            window.ga = window.ga || function () {
                 (ga.q = ga.q || []).push(arguments)
             };
             ga.l = +new Date;
 
-            window.addEventListener('anchorChanged', function(e) {
+            window.addEventListener('anchorChanged', function (e) {
                 ga('set', 'page', e.detail.anchor);
                 ga('send', 'pageview');
             });
@@ -116,11 +116,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body>
-    <simple-tracker id="tracker" account-id="UA-109693055-1" ga-initialized$="{{initialized}}"></simple-tracker>
     <geniusmirror-app></geniusmirror-app>
     <script src="https://www.google-analytics.com/analytics.js" async></script>
     <noscript>
-      Please enable JavaScript to view this website.
+        Please enable JavaScript to view this website.
     </noscript>
 </body>
 
