@@ -38,7 +38,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div> </div>
             <div class="header">[[name]]</div>
             <div>
-                <iron-icon icon="my-icons:feet"></iron-icon>
+                <iron-icon id="icon">
+                    <span>[[setMode(mode)]]</span>
+                </iron-icon>
             </div>
         </div>
     </template>
@@ -55,6 +57,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     boost: Number,
                     name: String,
                 };
+            }
+
+            setMode(mode) {
+                var value = "off";
+
+                // Mode_Off: 1,
+                // Mode_Timer: 2,
+                // Mode_Footprint: 4,
+                // Mode_Away: 8,
+                // Mode_Boost: 16,
+                // Mode_Early: 32,
+                // Mode_Test: 64,
+                // Mode_Linked: 128,
+                // Mode_Other: 256
+                switch (mode) {
+                    case 1:
+                    default:
+                        value = "off";
+                        break;
+
+                    case 2:
+                        value = "timer";
+                        break;
+
+                    case 4:
+                        value = "footprint";
+                        break;
+
+                    case 16:
+                        value = "boost"
+                }
+                this.$.icon.setAttribute('icon', "my-icons:" + value);
             }
         }
 

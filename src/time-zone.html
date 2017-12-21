@@ -9,29 +9,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="time-zone">
     <template>
-        <style include="shared-styles">
+        <style include="iron-flex iron-flex-alignment shared-styles">
              :host {
                 display: inline-block;
                 padding: 10px;
                 width: 100%;
-                height: 100%;
             }
 
              :host([hidden]) {
                 display: none;
             }
 
-            google-chart {
+            #chart {
                 width: 100%;
                 height: 350px;
             }
         </style>
-        <google-chart type="timeline" options="[[options]]" data="[[getData(data)]]"></google-chart>
+        <google-chart id="chart" type="timeline" options="[[options]]" data="[[getData(data)]]"></google-chart>
     </template>
 
     <script>
@@ -53,8 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         value: {
                             tooltip: {
                                 isHtml: false
-                            },
-                            legend: 'none'
+                            }
                         }
                     },
                     hidden: {
@@ -65,24 +64,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
             }
 
-            getUrl(id) {
-                return "../data/" + id + ".json";
+            redraw() {
+                if (this.$ !== undefined) {
+                    this.$.chart.redraw();
+                }
             }
 
             getData(timer) {
                 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                 let results = [];
 
-                let lastTime = -1;
+                results.push([days[0], String(1) + "℃", new Date(0), new Date(0)]);
                 for (let day = 0; day < 7; day++) {
                     let today = timer.filter(item => item.iDay == day)
+                    let lastTime = 0;
                     let setPoint = 0;
                     for (let key of Object.keys(today)) {
                         let event = today[key];
-                        if (lastTime !== event.iTm) {
+                        if (lastTime !== event.iTm && event.iTm !== -1) {
                             results.push([days[day], String(setPoint) + "℃", new Date(lastTime * 1000), new Date(
                                 event.iTm * 1000)]);
-                        }
+                        } else {}
                         setPoint = event.fSP;
                         lastTime = event.iTm;
                     }

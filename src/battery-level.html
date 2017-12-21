@@ -43,6 +43,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             getLevel(level) {
                 var value = "";
 
+                if (level === 255) {
+                    level = 0;
+                }
+
                 if (level > 90) {
                     value = "battery-full"
                 } else if (level > 80) {

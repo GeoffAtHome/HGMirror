@@ -26,24 +26,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 padding: 10px;
             }
 
-            paper-dialog {
+            #dialog {
                 width: 80%;
-                height: 80%;
             }
         </style>
-        <paper-dialog id="dialog">
-            <h2>[[zone.name]]</h2>
-            <paper-dialog-scrollable>
-                <time-zone data="[[zone.objTimer]]"></time-zone>
-            </paper-dialog-scrollable>
-        </paper-dialog>
-
         <div class="card" on-click="clickHandler">
             <zone-header mode$="[[zone.iMode]]" boost$="[[zone.iBoostTimeRemaining]]" on$="[[getZoneState(zone.bOutRequestHeat)]]" name="[[zone.name]]"></zone-header>
             <template is="dom-repeat" items="[[zone.nodes]]" as="node">
                 <device-card node="[[node]]" on="[[zone.bIsActive]]"></device-card>
             </template>
         </div>
+        <paper-dialog id="dialog" on-resized="openedChanged">
+            <h2>[[zone.name]]</h2>
+            <time-zone id="time" data="[[zone.objTimer]]"></time-zone>
+        </paper-dialog>
     </template>
 
     <script>
@@ -63,8 +59,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
             clickHandler() {
-                console.log("Clicked");
                 this.$.dialog.open();
+            }
+
+            openedChanged() {
+                this.$.time.redraw()
             }
         }
 
