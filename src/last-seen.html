@@ -19,10 +19,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <style include="iron-flex iron-flex-alignment shared-styles">
              :host {
                 display: inline-block;
-                width: 65px;
+                width: 50px;
             }
         </style>
-        [[value]]
+        <span>&nbsp;[[value]]</span>
     </template>
 
     <script>
@@ -37,27 +37,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         type: Number,
                         observer: 'dataChanged'
                     },
+                    basetime: Number,
                     value: String,
+                    down: {
+                        type: Boolean,
+                        value: false
+                    },
                     timer: Number
                 }
             };
 
             dataChanged(newData, oldData) {
                 if (newData) {
-                    this.update(newData);
+                    this.basetime = newData;
                     if (this.timer == undefined) {
-                        this.timer = setInterval(() => this.update(this.lastseen), 1000);
+                        this.timer = setInterval(() => this.update(this.basetime), 1000);
                     }
                 }
             }
 
             update(value) {
-                let delta = new Date(new Date() - value * 1000);
+                let delta = new Date(value * 1000);
+                if (this.down) {
+                    this.basetime -= 1;
+                } else {
+                    this.basetime += 1;
+                }
                 let minutes = delta.getMinutes();
                 let seconds = delta.getSeconds();
                 let lmz = minutes < 10 ? '0' : '';
                 let lsz = seconds < 10 ? '0' : '';
-                this.value = "  " + lmz + minutes + ":" + lsz + seconds + "  ";
+                this.value = lmz + minutes + ":" + lsz + seconds;
             }
 
         }

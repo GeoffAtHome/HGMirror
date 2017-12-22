@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="device-card.html">
+<link rel="import" href="last-seen.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -38,6 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div> </div>
             <div class="header">[[name]]</div>
             <div>
+                <last-seen down lastseen="[[getBoost(boost)]]"></last-seen>
                 <iron-icon id="icon">
                     <span>[[setMode(mode)]]</span>
                 </iron-icon>
@@ -57,6 +58,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     boost: Number,
                     name: String,
                 };
+            }
+
+            getBoost(boost) {
+                if (this.mode === 16) {
+                    return boost;
+                }
             }
 
             setMode(mode) {
