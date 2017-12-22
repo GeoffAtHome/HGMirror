@@ -1,0 +1,57 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="time-zone.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="popup-zone">
+    <template>
+        <style include="iron-flex iron-flex-alignment shared-styles">
+             :host {
+                display: block;
+                padding: 10px;
+                width: 100%;
+            }
+
+             :host([hidden]) {
+                display: none;
+            }
+        </style>
+        <h2>[[name]]</h2>
+        <time-zone id="time" data="[[data]]"></time-zone>
+    </template>
+
+    <script>
+        class PopupZone extends Polymer.Element {
+            static get is() {
+                return 'popup-zone';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    name: String,
+                    data: Array,
+                    hidden: {
+                        type: Boolean,
+                        reflectToAttribute: true,
+                        value: false
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(PopupZone.is, PopupZone);
+    </script>
+</dom-module>
