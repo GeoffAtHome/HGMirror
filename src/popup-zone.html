@@ -17,17 +17,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template>
         <style include="iron-flex iron-flex-alignment shared-styles">
              :host {
-                display: block;
+                display: inline-block;
                 padding: 10px;
-                width: 100%;
-            }
-
-             :host([hidden]) {
-                display: none;
+                width: 95%;
             }
         </style>
-        <h2>[[name]]</h2>
-        <time-zone id="time" data="[[data]]"></time-zone>
+        <h2>[[zone.name]]</h2>
+        <time-zone id="time" data="[[zone.objTimer]]"></time-zone>
     </template>
 
     <script>
@@ -41,13 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              */
             static get properties() {
                 return {
-                    name: String,
-                    data: Array,
-                    hidden: {
-                        type: Boolean,
-                        reflectToAttribute: true,
-                        value: false
-                    }
+                    zone: Object
                 };
             }
         }

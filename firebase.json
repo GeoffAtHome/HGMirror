@@ -1,6 +1,6 @@
 {
     "hosting": {
-        "public": "build/es6-unbundled",
+        "public": "build/es5-bundled",
         "rewrites": [{
             "source": "**",
             "destination": "/index.html"

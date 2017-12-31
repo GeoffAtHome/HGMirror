@@ -31,14 +31,7 @@
                 <zone-card zone="[[zone]]"></zone-card>
             </template>
         </div>
-        <div class="layout center-justified horizontal wrap">
-            <template is="dom-repeat" items="[[persistedData.zones]]" as="zone">
-                <paper-dialog id="dialog">
-                    <popup-zone name="[[zone.name]]" data="[[zone.objTimer]]"></popup-zone>
-                </paper-dialog>
-            </template>
-        </div>
-
+        <popup-zone id="timer"></popup-zone>
     </template>
 
     <script>
@@ -56,6 +49,16 @@
                     persistedData: Object,
                     initialized: Object
                 };
+            }
+
+            ready() {
+                super.ready();
+                window.addEventListener('showTimer', () => this._showTimer(event));
+            }
+
+            _showTimer(event) {
+                console.log("Show timer");
+                this.$.timer.zone = event.detail;
             }
         }
 

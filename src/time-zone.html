@@ -27,7 +27,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             #chart {
-                position: relative;
                 width: 100%;
                 height: 350px;
             }
@@ -72,29 +71,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             getData(timer) {
-                const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                let results = [];
+                if (timer !== undefined) {
+                    this.hidden = false;
+                    const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                    let results = [];
 
-                results.push([days[0], String(1) + "℃", new Date(0), new Date(0)]);
-                for (let day = 0; day < 7; day++) {
-                    let today = timer.filter(item => item.iDay == day)
-                    let lastTime = 0;
-                    let setPoint = 0;
-                    for (let key of Object.keys(today)) {
-                        let event = today[key];
-                        if (lastTime !== event.iTm && event.iTm !== -1) {
-                            results.push([days[day], String(setPoint) + "℃", new Date(lastTime * 1000), new Date(
-                                event.iTm * 1000)]);
-                        } else {}
-                        setPoint = event.fSP;
-                        lastTime = event.iTm;
+                    results.push([days[0], String(1) + "℃", new Date(0), new Date(0)]);
+                    for (let day = 0; day < 7; day++) {
+                        let today = timer.filter(item => item.iDay == day)
+                        let lastTime = 0;
+                        let setPoint = 0;
+                        for (let key of Object.keys(today)) {
+                            let event = today[key];
+                            if (lastTime !== event.iTm && event.iTm !== -1) {
+                                results.push([days[day], String(setPoint) + "℃", new Date(lastTime * 1000), new Date(
+                                    event.iTm * 1000)]);
+                            } else {}
+                            setPoint = event.fSP;
+                            lastTime = event.iTm;
+                        }
+                        results.push([days[day], String(setPoint) + "℃", new Date(lastTime * 1000), new Date(24 *
+                            60 *
+                            60 * 1000)]);
+                        lastTime = 0;
                     }
-                    results.push([days[day], String(setPoint) + "℃", new Date(lastTime * 1000), new Date(24 *
-                        60 *
-                        60 * 1000)]);
-                    lastTime = 0;
+                    return results;
+                } else {
+                    this.hidden = true;
                 }
-                return results;
             }
         }
 
