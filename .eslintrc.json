@@ -10,8 +10,14 @@
     "html"
   ],
   "rules": {
+    "linebreak-style": [
+      "error",
+      "windows"
+    ],
     "brace-style": "off",
-    "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }],
+    "new-cap": ["error", {
+      "capIsNewExceptions": ["Polymer"]
+    }],
     "no-var": "off",
     "require-jsdoc": "off"
   },
