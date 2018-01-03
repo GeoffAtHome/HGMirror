@@ -16,19 +16,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="title-card">
     <template>
-      <style include="iron-flex iron-flex-alignment shared-styles">
-       :host {
-        display: block;
-      }
-
-    </style>
-      <div class="title" stale$="[[stale]]" x$="[[getStale(data.timestamp)]]">
-          <div class="flex vertical">Genius Mirror</div>
-          <div>
-            <div class="subtitle">Daily: [[getTimeString(data.tmBoilerDaily)]]</div>
-            <div class="subtitle">Weekly: [[getTimeString(data.tmBoilerWeekly)]]</div>
+        <style include="iron-flex iron-flex-alignment shared-styles">
+             :host {
+                display: inline-block;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <div class="title" stale$="[[stale]]" x$="[[getStale(data.timestamp)]]">
+            <div class="flex vertical">Genius Mirror</div>
+            <div>
+                <div class="subtitle">Daily: [[getTimeString(data.tmBoilerDaily)]]</div>
+                <div class="subtitle">Weekly: [[getTimeString(data.tmBoilerWeekly)]]</div>
+            </div>
         </div>
-      </div>
     </template>
 
     <script>
@@ -81,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     return "stale";
                 }
             }
-            
+
         }
 
         window.customElements.define(TitleCard.is, TitleCard);
