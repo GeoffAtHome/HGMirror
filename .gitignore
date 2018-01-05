@@ -1,5 +1,6 @@
 bower_components/
 build/
+dist/
 node_modules/
 src/my-view1.html
 src/my-view2.html

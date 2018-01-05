@@ -1,10 +1,11 @@
 {
     "entrypoint": "index.html",
-    "shell": "src/geniusmirror-app.html",
+    "shell": "src/my-app.html",
     "fragments": [],
     "sources": [
         "src/**/*",
-        "images/**/*"
+        "images/**/*",
+        "bower.json"
     ],
     "extraDependencies": [
         "manifest.json",
@@ -12,9 +13,5 @@
     ],
     "lint": {
         "rules": ["polymer-2"]
-    },
-    "builds": [{
-            "preset": "es5-bundled"
-        }
-    ]
+    }
 }

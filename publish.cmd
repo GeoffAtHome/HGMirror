@@ -1,3 +1,2 @@
-REM call polymer build
-call webpack
+call polymer build
 call firebase deploy

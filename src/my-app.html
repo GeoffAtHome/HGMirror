@@ -156,14 +156,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _showTimer(event) {
-                console.log("Show timer");
                 this.$.timer.zone = event.detail;
                 this.page = "timer";
-                this.pagezone = event.detail.zone.name;
+                this.pagezone = event.detail.name;
             }
 
             _clickHomeHandler() {
-                this.page = "home";
+                this.page = 'home';
                 this.pagezone = this.page;
             }
 
