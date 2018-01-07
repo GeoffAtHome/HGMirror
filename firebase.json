@@ -1,6 +1,6 @@
 {
     "hosting": {
-        "public": "build/default",
+        "public": "dist",
         "rewrites": [{
             "source": "**",
             "destination": "/index.html"
