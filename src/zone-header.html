@@ -33,15 +33,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              :host([on]) {
                 background-color: orange;
             }
+
+            iron-icon {
+                padding-bottom: 5px;
+            }
         </style>
         <div class="layout horizontal justified top">
             <div> </div>
-            <div class="header">[[name]]</div>
-            <div>
-                <last-seen down lastseen="[[getBoost(boost)]]"></last-seen>
+            <div class="header">
                 <iron-icon id="icon">
                     <span>[[setMode(mode)]]</span>
                 </iron-icon>
+                <span>[[name]]</span>
+            </div>
+            <div>
+                <last-seen down lastseen="[[getBoost(boost)]]"></last-seen>
             </div>
         </div>
     </template>

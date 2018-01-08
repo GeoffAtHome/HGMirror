@@ -1,4 +1,3 @@
-'use strict';
 /* global __dirname module require*/
 /* eslint comma-dangle: ["error", "never"] */
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -8,7 +7,7 @@ const path = require('path');
 module.exports = {
     // Tell Webpack which file kicks off our app.
     entry: path.resolve(__dirname, 'src/my-app.html'),
-    // Tell Weback to output our bundle to ./dist/bundle.js
+    // Tell Webpack to output our bundle to ./dist/bundle.js
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist')
@@ -65,10 +64,20 @@ module.exports = {
             from: path.resolve(__dirname, 'bower_components/webcomponentsjs/*.js'),
             to: 'bower_components/webcomponentsjs/[name].[ext]'
         }]),
+        // Needed for firebase
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, 'bower_components/firebase/firebase-app.js'),
             to: 'bower_components/firebase/[name].[ext]'
+        }]),
+        // Copy manifest.json
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'manifest.json'),
+            to: 'manifest.json'
+        }]),
+        // Copy images directory
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'images/'),
+            to: 'images/'
         }])
-
     ]
 };

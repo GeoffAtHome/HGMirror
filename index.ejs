@@ -49,56 +49,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta name="msapplication-TileColor" content="#3f51b5">
     <meta name="msapplication-tap-highlight" content="no">
 
-    <script>
-        // Register the base URL
-        const baseUrl = document.querySelector('base').href;
-
-        // Load and register pre-caching Service Worker
-        /* if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register(baseUrl + 'service-worker.js');
-            });
-        } */
-    </script>
-    <script>
-        if (window.fetch) {
-            var refScript = document.getElementsByTagName('script')[0];
-            var script = document.createElement('script');
-            script.src = 'bower_components/webcomponentsjs/custom-elements-es5-adapter.js';
-            refScript.parentNode.insertBefore(script, refScript);
-        }
-    </script>
-    <script>
-        document.addEventListener('WebComponentsReady', function webcomponentsready() {
-            var refScript = document.getElementsByTagName('script')[0];
-            var script = document.createElement('script');
-            script.src = 'bundle.js';
-            refScript.parentNode.insertBefore(script, refScript);
-            document.removeEventListener('WebComponentsReady', webcomponentsready, false);
-        }, false);
-    </script>
-    <script src="bower_components/firebase/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/charts/loader.js"></script>
-    <script>
-        (function () {
-            'use strict';
-            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-                return;
-            }
-            window.ga = window.ga || function () {
-                (ga.q = ga.q || []).push(arguments)
-            };
-            ga.l = +new Date;
-            window.addEventListener('anchorChanged', function (e) {
-                ga('set', 'page', e.detail.anchor);
-                ga('send', 'pageview');
-            });
-            ga('create', 'UA-109693055-1', 'auto');
-            ga('send', 'pageview');
-        })();
-    </script>
-    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
     <style>
         body {
             margin: 0;
@@ -112,6 +62,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <body>
     <my-app></my-app>
+    <!--
+      Feature detect Custom Elements support. If the browser DOES support Custom
+      Elements then we need to load the custom-elements-es5-adapter because
+      our project code has been transpiled from ES2015 to ES5 and native Custom
+      Elements expect elements will be registered as classes.
+    -->
+    <div id="ce-es5-shim">
+        <script type="text/javascript">
+            if (!window.customElements) {
+                var ceShimContainer = document.querySelector('#ce-es5-shim');
+                ceShimContainer.parentElement.removeChild(ceShimContainer);
+            }
+        </script>
+        <script type="text/javascript" src="bower_components/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+    </div>
+
+    <!--
+        Use the webcomponents-loader script which will feature detect which Web
+        Components features are missing and lazy load the appropriate polyfills.
+        When we hear the 'WebComponentsReady' event from the polyfill bundle we can
+        insert our 'bundle.js'.
+      -->
+    <script>
+        (function () {
+            document.addEventListener('WebComponentsReady', function componentsReady() {
+                document.removeEventListener('WebComponentsReady', componentsReady, false);
+                var script = document.createElement('script');
+                script.src = '<%= htmlWebpackPlugin.files.js[0] %>';
+                var refScript = document.getElementsByTagName('script')[0];
+                refScript.parentNode.insertBefore(script, refScript);
+            }, false);
+        })();
+    </script>
+    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="bower_components/firebase/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
     <noscript>
         Please enable JavaScript to view this website.
     </noscript>
