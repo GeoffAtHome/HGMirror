@@ -29,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
         <firebase-document id="location" path="/data/nodes/[[node_id]]" data="{{reading}}"></firebase-document>
-        <app-indexeddb-mirror session="locations" key="/rad/[[node_id]]" data="{{reading}}" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror key="/rad/[[node_id]]" data="[[reading]]" persisted-data="{{persistedData}}"></app-indexeddb-mirror>
         <div class="layout horizontal start">
             <iron-icon on$="[[getRadiatorState(on)]]" icon="my-icons:radiator"></iron-icon>
             <battery-level level="[[persistedData.Battery]]"></battery-level>

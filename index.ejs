@@ -78,6 +78,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <script type="text/javascript" src="bower_components/webcomponentsjs/custom-elements-es5-adapter.js"></script>
     </div>
 
+    <script>
+        // Load and register pre-caching Service Worker
+        window.Polymer = {
+            rootPath: '/'
+        };
+
+        // Load and register pre-caching Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('service-worker.js', {
+                    scope: Polymer.rootPath,
+                });
+            });
+        }
+    </script>
+
     <!--
         Use the webcomponents-loader script which will feature detect which Web
         Components features are missing and lazy load the appropriate polyfills.
@@ -96,6 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })();
     </script>
     <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js"></script>
     <script src="bower_components/firebase/firebase-app.js"></script>
     <script src="https://www.gstatic.com/charts/loader.js"></script>
     <noscript>

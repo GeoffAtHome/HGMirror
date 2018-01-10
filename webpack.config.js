@@ -2,6 +2,8 @@
 /* eslint comma-dangle: ["error", "never"] */
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var CopyWebpackPlugin = require('copy-webpack-plugin');
+var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+
 const path = require('path');
 
 module.exports = {
@@ -69,6 +71,11 @@ module.exports = {
             from: path.resolve(__dirname, 'bower_components/firebase/firebase-app.js'),
             to: 'bower_components/firebase/[name].[ext]'
         }]),
+        // Needed for app-indexedbd-mirror
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js'),
+            to: 'bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js'
+        }]),
         // Copy manifest.json
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, 'manifest.json'),
@@ -78,6 +85,14 @@ module.exports = {
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, 'images/'),
             to: 'images/'
-        }])
+        }]),
+        new SWPrecacheWebpackPlugin({
+            cacheId: 'genius-mirror',
+            dontCacheBustUrlsMatching: /\.\w{8}\./,
+            filename: 'service-worker.js',
+            minify: true,
+            navigateFallback: '/index.html',
+            staticFileGlobsIgnorePatterns: [/\.map$/, /asset-manifest\.json$/],
+        }),
     ]
 };
