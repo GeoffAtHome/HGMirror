@@ -24,11 +24,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="my-icons.html">
-<link rel="import" href="popup-zone.html">
-<link rel="import" href="geniusmirror-app.html">
 <link rel="import" href="title-card.html">
 <link rel="import" href="zone-menu.html">
 <link rel="import" href="shared-styles.html">
+<link rel="lazy-import" href="popup-zone.html">
+<link rel="lazy-import" href="geniusmirror-app.html">
 
 
 <dom-module id="my-app">
@@ -139,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     subroute: String,
                     // This shouldn't be neccessary, but the Analyzer isn't picking up
                     // Polymer.Element#rootPath
-                    rootPath: String,
+                    rootPath: String
                 };
             }
 
@@ -179,14 +179,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _pageChanged(page) {
+                let loadModule;
                 // Load page import on demand. Show 404 page if fails
-                /*
-                var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-                Polymer.importHref(
-                    resolvedPageUrl,
-                    null,
-                    this._showPage404.bind(this),
-                    true); */
+                if (page === 'home') {
+                    page = 'geniusmirror-app.html';
+                    loadModule = function () {
+                        require([ /* webpackChunkName: "geniusmirror-app" */
+                            './geniusmirror-app.html'
+                        ], require => {});
+                    };
+
+                } else {
+                    page = 'popup-zone.html';
+                    loadModule = function () {
+                        require([ /* webpackChunkName: "popup-zone" */
+                            './popup-zone.html'
+                        ], require => {});
+                    };
+                }
+
+                if (usingWebpack) {
+                    loadModule();
+                } else {
+                    var resolvedPageUrl = this.resolveUrl(page);
+                    Polymer.importHref(
+                        resolvedPageUrl,
+                        null,
+                        this._showPage404.bind(this),
+                        true);
+                }
             }
 
             _showPage404() {

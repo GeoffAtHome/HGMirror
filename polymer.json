@@ -1,7 +1,10 @@
 {
     "entrypoint": "index.html",
     "shell": "src/my-app.html",
-    "fragments": [],
+    "fragments": [
+        "src/geniusmirror-app.html",
+        "src/popup-zone.html"
+    ],
     "sources": [
         "src/**/*",
         "images/**/*",

@@ -1,9 +1,9 @@
 /* global __dirname module require*/
 /* eslint comma-dangle: ["error", "never"] */
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
-var SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const webpack = require('webpack');
 const path = require('path');
 
 module.exports = {
@@ -66,15 +66,15 @@ module.exports = {
             from: path.resolve(__dirname, 'bower_components/webcomponentsjs/*.js'),
             to: 'bower_components/webcomponentsjs/[name].[ext]'
         }]),
+        // Needed for app-indexedbd-mirror
+        new CopyWebpackPlugin([{
+            from: path.resolve(__dirname, 'bower_components/app-storage/app-indexeddb-mirror/*.js'),
+            to: '[name].[ext]'
+        }]),
         // Needed for firebase
         new CopyWebpackPlugin([{
             from: path.resolve(__dirname, 'bower_components/firebase/firebase-app.js'),
             to: 'bower_components/firebase/[name].[ext]'
-        }]),
-        // Needed for app-indexedbd-mirror
-        new CopyWebpackPlugin([{
-            from: path.resolve(__dirname, 'bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js'),
-            to: 'bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js'
         }]),
         // Copy manifest.json
         new CopyWebpackPlugin([{
