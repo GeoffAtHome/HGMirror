@@ -14,7 +14,9 @@ import { RootAction, RootState } from '../store';
 
 const INITIAL_STATE: UsersState = {
   _loggedIn: false,
-  _blank: '',
+  _serverName: '',
+  _credentials: '',
+  _authString: '',
 };
 
 const userData: Reducer<UsersState, RootAction> = (
@@ -27,6 +29,9 @@ const userData: Reducer<UsersState, RootAction> = (
       return {
         ...state,
         _loggedIn: action._loggedIn,
+        _serverName: action._serverName,
+        _credentials: action._credentials,
+        _authString: action._authString,
       };
 
     default:

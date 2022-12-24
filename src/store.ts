@@ -22,6 +22,7 @@ import { lazyReducerEnhancer } from 'pwa-helpers/lazy-reducer-enhancer';
 import app, { AppState } from './reducers/app';
 import { AppAction } from './actions/app';
 import { UsersAction, UsersState } from './actions/user';
+import { HgDataActions, HgDataState } from './actions/hg-data';
 
 declare global {
   interface Window {
@@ -35,9 +36,10 @@ declare global {
 export interface RootState {
   app?: AppState;
   userData?: UsersState;
+  hgData?: HgDataState;
 }
 
-export type RootAction = AppAction | UsersAction;
+export type RootAction = AppAction | UsersAction | HgDataActions;
 
 // Sets up a Chrome extension for time travel debugging.
 // See https://github.com/zalmoxisus/redux-devtools-extension for more information.

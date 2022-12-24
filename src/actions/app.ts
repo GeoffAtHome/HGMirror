@@ -58,6 +58,10 @@ export const updateDrawerState: ActionCreator<AppActionUpdateDrawerState> = (
 
 const loadPage: ActionCreator<ThunkResult> = (page: string) => dispatch => {
   switch (page) {
+    case 'home':
+      import('../components/home-page');
+      break;
+
     case 'welcome':
       import('../components/welcome-page').then(() => {
         // Put code in here that you want to run every time when

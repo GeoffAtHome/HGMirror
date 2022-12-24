@@ -21,16 +21,29 @@ contact_details – name, phone number, email address….. */
 
 export interface UsersState {
   _loggedIn: boolean;
-  _blank: string;
+  _serverName: string;
+  _credentials: string;
+  _authString: string;
 }
 
 export interface UserLoggedIn extends Action<'USER_LOGGED_IN'> {
   _loggedIn: boolean;
+  _serverName: string;
+  _credentials: string;
+  _authString: string;
 }
 
 export type UsersAction = UserLoggedIn;
 
-export const userDataSelectUser: ActionCreator<UserLoggedIn> = _loggedIn => ({
+export const userDataSelectUser: ActionCreator<UserLoggedIn> = (
+  _loggedIn,
+  _serverName,
+  _credentials,
+  _authString
+) => ({
   type: USER_LOGGED_IN,
   _loggedIn,
+  _serverName,
+  _credentials,
+  _authString,
 });

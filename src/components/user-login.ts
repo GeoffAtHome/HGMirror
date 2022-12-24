@@ -19,12 +19,21 @@ import { computeHash } from './sha256';
 import { store } from '../store';
 import { navigate } from '../actions/app';
 
-import userData, { userDataSelector } from '../reducers/user';
 import { userDataSelectUser } from '../actions/user';
+import userData, { userDataSelector } from '../reducers/user';
+import { hgDataSetData } from '../actions/hg-data';
+import hgData, { fetchHgData, hgDataSelector } from '../reducers/hg-data';
+
 // We are lazy loading its reducer.
 if (userDataSelector(store.getState()) === undefined) {
   store.addReducers({
     userData,
+  });
+}
+
+if (hgDataSelector(store.getState()) === undefined) {
+  store.addReducers({
+    hgData,
   });
 }
 
@@ -47,9 +56,6 @@ export class UserLogin extends LitElement {
   @property({ type: Boolean })
   private loggedIn: boolean = false;
 
-  @property({ type: String })
-  private serverName: string = '';
-
   @property({ type: Boolean })
   private inProgress: boolean = true;
 
@@ -65,7 +71,6 @@ export class UserLogin extends LitElement {
       >
         <h1>What is this</h1>
       </vaadin-login-overlay>
-      ${this.inProgress} ${this.serverName}
     `;
   }
 
@@ -100,7 +105,7 @@ export class UserLogin extends LitElement {
     )}`;
 
     const url = 'https://hub.geniushub.co.uk/checkin';
-
+    let results: any = {};
     try {
       const result = await fetch(url, {
         method: 'GET',
@@ -112,7 +117,7 @@ export class UserLogin extends LitElement {
 
       if (result.status === 200) {
         delete this.loginForm.opened;
-        const res = await result.json();
+        results = await result.json();
       } else {
         this.loginForm.opened = true;
         this.loginForm.error = true;
@@ -133,16 +138,19 @@ export class UserLogin extends LitElement {
     localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
     localStorage.setItem('loggedIn', 'true');
     // Remember the serve name as this tends to change.
-    // this.serverName = `https://${req.response.data.tunnel.server_name}/v3/zones`;
+    const serverName = `https://${results.data.tunnel.server_name}/v3/zones`;
     this.inProgress = false;
     this.loggedIn = !this.loggedIn;
     // Remember the serve name as this tends to change.
-    this.serverName = `http://${localaddress}:1223/v3/zones`;
+    // this.serverName = `http://${localaddress}:1223/v3/zones`;
     this.inProgress = false;
     this.loggedIn = !this.loggedIn;
 
-    store.dispatch(userDataSelectUser(true));
-    const newLocation = `/#userLogin`;
+    store.dispatch(
+      userDataSelectUser(true, serverName, credentials, authString)
+    );
+    fetchHgData(serverName, authString);
+    const newLocation = `/#home`;
     window.history.pushState({}, '', newLocation);
     store.dispatch(navigate(decodeURIComponent(newLocation)));
   }

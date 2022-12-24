@@ -24,16 +24,18 @@ import { store, RootState } from '../store';
 // These are the actions needed by this element.
 import { navigate, updateOffline, updateDrawerState } from '../actions/app';
 import { userDataSelector } from '../reducers/user';
+import { hgDataSelector } from '../reducers/hg-data';
 
 // These are the elements needed by this element.
 import '@material/mwc-top-app-bar';
 import '@material/mwc-drawer';
 import '@material/mwc-button';
 import '@pwabuilder/pwainstall';
-import '@pwabuilder/pwaupdate';
 import './user-login';
+import './zone-menu';
 import { menuIcon, arrowBackIcon, logOutIcon } from './my-icons';
 import './snack-bar';
+import { ZoneData } from '../actions/hg-data';
 
 function _BackButtonClicked() {
   window.history.back();
@@ -43,6 +45,10 @@ function getTitle(page: string) {
   let title = '';
 
   switch (page) {
+    case 'home':
+      title = 'Home page';
+      break;
+
     case 'welcome':
       title = 'Welcome Page';
       break;
@@ -79,6 +85,9 @@ export class MainApp extends connect(store)(LitElement) {
 
   @property({ type: Boolean })
   private _loggedIn: boolean = false;
+
+  @property({ type: Array<ZoneData> })
+  private _zones: Array<ZoneData> = [];
 
   private startX: number = 0;
 
@@ -225,9 +234,16 @@ export class MainApp extends connect(store)(LitElement) {
         <span slot="title">Menu</span>
         <div>
           <nav class="toolbar-list">
+            <a ?selected="${this._page === 'home'}" href="/#home">Home</a>
             <a ?selected="${this._page === 'welcome'}" href="/#welcome"
               >Welcome</a
             >
+            ${this._zones.map(
+              item =>
+                html`<a ?selected="${this._page === 'welcome'}" href="/#welcome"
+                  >${item.name}</a
+                >`
+            )}
           </nav>
         </div>
         <!-- Header -->
@@ -256,7 +272,12 @@ export class MainApp extends connect(store)(LitElement) {
           <div>
             <main id="track" role="main">
               ${this._loggedIn === true
-                ? html` <welcome-page
+                ? html` <home-page
+                      class="page"
+                      ?active="${this._page === 'home'}"
+                      .zones="${this._zones}"
+                    ></home-page>
+                    <welcome-page
                       class="page"
                       ?active="${this._page === 'welcome'}"
                     ></welcome-page>
@@ -279,7 +300,6 @@ export class MainApp extends connect(store)(LitElement) {
         ${this._message}.
       </snack-bar>
       <pwa-install></pwa-install>
-      <pwa-update offlineToastDuration="0" swpath="sw.js"></pwa-update>
     `;
   }
 
@@ -316,6 +336,11 @@ export class MainApp extends connect(store)(LitElement) {
     this._snackbarOpened = state.app!.snackbarOpened;
     this._drawerOpened = state.app!.drawerOpened;
     this.appTitle = getTitle(this._page);
+
+    const hgState = hgDataSelector(state);
+    if (hgState?._data !== undefined) {
+      this._zones = hgState._zones;
+    }
   }
 
   handleStart(e: TouchEvent) {
