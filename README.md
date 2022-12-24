@@ -1,35 +1,30 @@
-# HG Mirror
+<p align="center">
+  <img width="200" src="https://open-wc.org/hero.png"></img>
+</p>
 
-This project mirrors the data in from the Genius Hub that is produced by the hg project. Genius heating hub. See https://www.geniushub.co.uk/ for details.
+## Open-wc Starter App
 
-This adds value over the Genius Hub app as it displays the information I want to see. You can customize it to display the information you want to see.
+[![Built with open-wc recommendations](https://img.shields.io/badge/built%20with-open--wc-blue.svg)](https://github.com/open-wc)
 
-The project makes use of Polymer 2.0 and Firebase. The data is retrieved from Firebase and updates the web page as necessary.
+## Quickstart
 
-### How To Use
+To get started:
 
-Install the Polymer CLI pre-requisites. The details for how to do this can be found here. https://www.polymer-project.org/2.0/docs/tools/polymer-cli
+```sh
+npm init @open-wc
+# requires node 10 & npm 6 or higher
+```
 
-When the project is cloned run `bower install` to pull in the necessary bower components.
+## Scripts
 
-### Configuration
-In `src/geniusmirror-app.html` add the necessary information for the firebase-app element.
+- `start` runs your app for development, reloading on file changes
+- `start:build` runs your app after it has been built using the build command
+- `build` builds your app and outputs it in your `dist` directory
+- `test` runs your test suite with Web Test Runner
+- `lint` runs the linter for your project
 
-    <firebase-app 
-      api-key="" 
-      auth-domain = "" 
-      database-url="" 
-      project-id="" 
-      storage-bucket="" 
-      messaging-sender-id="">
-    </firebase-app>
+## Tooling configs
 
-The information for this can be obtained from Firebase project that was to publish the data (hg project).
+For most of the tools, the configuration is in the `package.json` to reduce the amount of files in your project.
 
-### Testing
-With the configuration complete the web app can be tested locally by running  `polymer serve --open`. This should open a browser that displays the running application.
-
-### Publishing
-When you are happy with the testing, the app can be published directly to Firebase. Details TBD.
-
-Have a good day everyday.
+If you customize the configuration a lot, you can consider moving them to individual files.

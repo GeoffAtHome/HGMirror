@@ -1,128 +1,40 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="generator" content="Genius hub web mirror">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-
-    <title>Genius Mirror</title>
-    <meta name="description" content="Genius hub web mirror">
-    <base href="/">
-
-    <link rel="icon" href="images/favicon.ico">
-
-    <!-- See https://goo.gl/OOhYW5 -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- See https://goo.gl/qRE0vM -->
-    <meta name="theme-color" content="#3f51b5">
-
-    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Genius Mirror">
-
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Genius Mirror">
-
-    <!-- Homescreen icons -->
-    <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
-
-    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#3f51b5">
-    <meta name="msapplication-tap-highlight" content="no">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="Description" content="Put your description here." />
+    <base href="/" />
 
     <script>
-        /**
-         * [polymer-root-path]
-         *
-         * By default, we set `Polymer.rootPath` to the server root path (`/`).
-         * Leave this line unchanged if you intend to serve your app from the root
-         * path (e.g., with URLs like `my.domain/` and `my.domain/view1`).
-         *
-         * If you intend to serve your app from a non-root path (e.g., with URLs
-         * like `my.domain/my-app/` and `my.domain/my-app/view1`), edit this line
-         * to indicate the path from which you'll be serving, including leading
-         * and trailing slashes (e.g., `/my-app/`).
-         */
-        window.Polymer = {
-            rootPath: '/'
-        };
-
-        usingWebpack = false;
-
-        // Load and register pre-caching Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register('service-worker.js', {
-                    scope: Polymer.rootPath,
-                });
-            });
-        }
+      // Redux assumes `process.env.NODE_ENV` exists in the ES module build.
+      // https://github.com/reactjs/redux/issues/2907
+      window.process = { env: { NODE_ENV: 'production' } };
     </script>
-
-    <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-
-    <!-- Load your application shell -->
-    <link rel="import" href="src/my-app.html">
-    <script>
-        (function () {
-            'use strict';
-
-            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-                return;
-            }
-
-            window.ga = window.ga || function () {
-                (ga.q = ga.q || []).push(arguments)
-            };
-            ga.l = +new Date;
-
-            window.addEventListener('anchorChanged', function (e) {
-                ga('set', 'page', e.detail.anchor);
-                ga('send', 'pageview');
-            });
-
-            ga('create', 'UA-109693055-1', 'auto');
-            ga('send', 'pageview');
-        })();
-    </script>
-    <!-- Add any global styles for body, document, etc. -->
     <style>
-        body {
-            margin: 0;
-            font-family: 'Roboto', 'Noto', sans-serif;
-            line-height: 1.5;
-            min-height: 100vh;
-            background-color: #eeeeee;
-        }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        background-color: #ededed;
+      }
     </style>
-</head>
+    <title>hg-mirror</title>
+  </head>
 
-<body>
-    <my-app></my-app>
-    <script src="https://www.google-analytics.com/analytics.js" async></script>
-    <noscript>
-        Please enable JavaScript to view this website.
-    </noscript>
-</body>
+  <body>
+    <main-app></main-app>
 
+    <script type="module" src="./out-tsc/src/components/main-app.js"></script>
+    <script type="module">
+      import 'https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate';
+
+      const el = document.createElement('pwa-update');
+      document.body.appendChild(el);
+    </script>
+  </body>
 </html>
