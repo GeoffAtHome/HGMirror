@@ -16,6 +16,11 @@ import {
   hgDataSetData,
   ZoneData,
   ZoneMode,
+  Devices,
+  SensorDevice,
+  DeviceType,
+  TRVDevice,
+  SwitchDevice,
 } from '../actions/hg-data';
 import { RootAction, RootState, store } from '../store';
 
@@ -61,6 +66,54 @@ export default hgData;
 
 export const hgDataSelector = (state: RootState) => state.hgData;
 
+function getDevices(item: any): Array<Devices> {
+  const devices: Array<Devices> = [];
+
+  for (const [x, node] of item.nodes.entries()) {
+    if (node.childValues.LUMINANCE !== undefined) {
+      const sensorDevice: SensorDevice = {
+        deviceType: DeviceType.sensor,
+        batteryLevel: node.childValues.Battery.val,
+        temperature: node.childValues.TEMPERATURE.val.toFixed(1),
+        lastSeen: node.childValues.lastComms.val,
+        luminance: node.childValues.LUMINANCE.val,
+        motion: 0,
+      };
+      devices.push(sensorDevice);
+    } else if (node.childValues.HEATING_1 !== undefined) {
+      const trvDevice: TRVDevice = {
+        deviceType: DeviceType.trv,
+        batteryLevel: node.childValues.Battery.val,
+        temperature: node.childValues.HEATING_1.val.toFixed(1),
+        lastSeen: node.childValues.lastComms.val,
+      };
+      devices.push(trvDevice);
+    } else if (node.childValues.SwitchBinary !== undefined) {
+      const switchDevice: SwitchDevice = {
+        deviceType: DeviceType.switch,
+        onOff: node.childValues.SwitchBinary === 1,
+        lastSeen: node.childValues.lastComms.val,
+      };
+      devices.push(switchDevice);
+    }
+  }
+
+  return devices;
+}
+
+function getZone(item: any): ZoneData {
+  const zoneItem: ZoneData = {
+    name: item.strName,
+    id: '',
+    mode: item.iMode,
+    isSwitch: item.nodes[0].childValues.SwitchBinary !== undefined,
+    boost: item.iMode === ZoneMode.ModeBoost ? item.iBoostTimeRemaining : -1,
+    devices: getDevices(item),
+  };
+
+  return zoneItem;
+}
+
 function LogError(text: string, err: any) {
   // eslint-disable-next-line no-console
   console.error(`${text}: ${err}`);
@@ -87,14 +140,7 @@ export async function fetchHgData(serverName: string, authString: string) {
       const zones: Array<ZoneData> = [];
       if (zone.entries !== undefined) {
         for (const [x, item] of zone.entries()) {
-          const zoneItem: ZoneData = {
-            name: item.strName,
-            id: '',
-            mode: item.iMode,
-            isSwitch: item.nodes[0].childValues.SwitchBinary !== undefined,
-            boost:
-              item.iMode === ZoneMode.ModeBoost ? item.iBoostTimeRemaining : -1,
-          };
+          const zoneItem: ZoneData = getZone(item);
           zones.push(zoneItem);
         }
       }

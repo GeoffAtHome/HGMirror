@@ -8,16 +8,13 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 */
 
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, PropertyValues } from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement } from 'lit/decorators.js';
 import { SharedStyles } from './shared-styles';
 
 @customElement('last-seen')
 export class LastSeen extends LitElement {
-  @property({ type: Number })
-  private baseTime: number = 0;
-
   @property({ type: Boolean })
   private down = false;
 
@@ -27,29 +24,33 @@ export class LastSeen extends LitElement {
   @property({ type: Number })
   private timer = NaN;
 
-  private intervalID: number | null = null;
+  private baseTime: number = 0;
 
-  @property({ type: String })
-  private value = '';
+  private intervalID: ReturnType<typeof setInterval> | undefined;
+
+  private value = '14:00';
 
   static get styles() {
     return [
       SharedStyles,
       css`
         :host {
-          display: inline-block;
+          display: inline-flex;
+          flex-direction: row;
           width: 50px;
+          height: 50px;
+          padding-left: 15px;
         }
       `,
     ];
   }
 
   protected render() {
-    return html` <span>${this.value}</span> `;
+    return html`${this.value}`;
   }
 
   protected firstUpdated(): void {
-    this.intervalID = window.setInterval(() => {
+    this.intervalID = setInterval(() => {
       this.timer += 1;
       this.requestUpdate();
     }, 1000);
@@ -60,7 +61,7 @@ export class LastSeen extends LitElement {
     }
   }
 
-  update() {
+  updated(changedProps: PropertyValues): void {
     const now = new Date().getTime();
     const delta = this.down
       ? new Date(this.baseTime - now)
@@ -70,5 +71,6 @@ export class LastSeen extends LitElement {
     const lmz = minutes < 10 ? '0' : '';
     const lsz = seconds < 10 ? '0' : '';
     this.value = `${lmz + minutes}:${lsz}${seconds}`;
+    console.log(`Value:${this.value}`);
   }
 }

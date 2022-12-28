@@ -26,10 +26,11 @@ export class ZoneHeader extends LitElement {
       SharedStyles,
       css`
         :host {
-          display: inline-block;
+          display: inline-flex;
+          flex-direction: row;
+          justify-content: space-between;
           width: 100%;
-          margin: 0px;
-          height: 28px;
+          height: var(--card-row-height);
           color: white;
           background-color: var(--app-primary-color);
           font-size: 20px;
@@ -40,6 +41,10 @@ export class ZoneHeader extends LitElement {
 
         :host([on]) {
           background-color: orange;
+        }
+
+        .container {
+          flex: 0 1 2 3 auto 4 5;
         }
 
         paper-icon-button {
@@ -71,19 +76,19 @@ export class ZoneHeader extends LitElement {
 
   protected render() {
     return html`
-      <div class="layout horizontal justified top">
-        <div class="layout horizontal layout-start">
-          <a href="/home/[[zone.iID]]/off">${offIcon}</a>
-          <a href="/boost/[[zone.iID]]">${boostIcon}</a>
-          <a href="/home/[[zone.iID]]/timer">${timerIcon}</a>
-          ${this.zone.isSwitch === true
-            ? html``
-            : html`<a href="/home/[[zone.iID]]/footprint">${footprintIcon}</a>`}
-        </div>
+      <div>
+        <a href="/home/[[zone.iID]]/off">${offIcon}</a>
+        <a href="/boost/[[zone.iID]]">${boostIcon}</a>
+        <a href="/home/[[zone.iID]]/timer">${timerIcon}</a>
+        ${this.zone.isSwitch === true
+          ? html``
+          : html`<a href="/home/[[zone.iID]]/footprint">${footprintIcon}</a>`}
+      </div>
+      <div>
         <span>${this.zone.name}</span>
-        <div>
-          <last-seen .lastSeen="${this.zone.boost}"></last-seen>
-        </div>
+      </div>
+      <div>
+        <last-seen .lastSeen="${this.zone.boost}"></last-seen>
       </div>
     `;
   }

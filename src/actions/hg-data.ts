@@ -45,12 +45,45 @@ export enum ZoneMode {
   ModeOther = 256,
 }
 
+// eslint-disable-next-line no-shadow
+export enum DeviceType {
+  unknown = 0,
+  trv = 1,
+  sensor = 2,
+  switch = 3,
+}
+
+export interface SensorDevice {
+  deviceType: DeviceType;
+  batteryLevel: number;
+  temperature: number;
+  lastSeen: number;
+  luminance: number;
+  motion: number;
+}
+
+export interface SwitchDevice {
+  deviceType: DeviceType;
+  onOff: boolean;
+  lastSeen: number;
+}
+
+export interface TRVDevice {
+  deviceType: DeviceType;
+  batteryLevel: number;
+  temperature: number;
+  lastSeen: number;
+}
+
+export type Devices = SensorDevice | SwitchDevice | TRVDevice;
+
 export interface ZoneData {
   name: string;
   id: string;
   mode: ZoneMode;
   isSwitch: boolean;
   boost: number;
+  devices: Array<Devices>;
 }
 
 export const defaultZoneData: ZoneData = {
@@ -59,6 +92,7 @@ export const defaultZoneData: ZoneData = {
   mode: ZoneMode.ModeTest,
   isSwitch: false,
   boost: -1,
+  devices: [],
 };
 
 export interface HgDataState {

@@ -10,31 +10,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
-import { ZoneData } from '../actions/hg-data';
+import { property, customElement } from 'lit/decorators.js';
+import { occupiedIcon, unoccupiedIcon } from './my-icons';
 import { SharedStyles } from './shared-styles';
 
-import './zone-card';
-
-@customElement('home-page')
-export class HomePage extends LitElement {
-  @property({ type: Array })
-  private zones: Array<ZoneData> = [];
+@customElement('motion-level')
+export class MotionLevel extends LitElement {
+  @property({ type: Number })
+  private motion = 0;
 
   static get styles() {
     return [
       SharedStyles,
       css`
         :host {
-          display: grid;
+          display: inline-flex;
+          flex-direction: row;
+          padding-left: 15px;
         }
       `,
     ];
   }
 
   protected render() {
-    return html`${this.zones.map(
-      item => html`<zone-card .zone="${item}"></zone-card>`
-    )}`;
+    return html`${this.motion > 0
+      ? html`${occupiedIcon}`
+      : html`${unoccupiedIcon}`} `;
   }
 }

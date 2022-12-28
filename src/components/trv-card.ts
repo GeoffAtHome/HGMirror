@@ -13,40 +13,39 @@ import { LitElement, html, css } from 'lit';
 import { property, customElement, query } from 'lit/decorators.js';
 import {
   defaultZoneData,
-  DeviceType,
+  TRVDevice,
   ZoneData,
   ZoneMode,
 } from '../actions/hg-data';
 import { SharedStyles } from './shared-styles';
 
 import './zone-header';
-import './trv-card';
-import './sensor-card';
-import './switch-card';
+import './battery-level';
+import './temperature-level';
+import './last-seen';
+import { radiatorIcon } from './my-icons';
 
-@customElement('zone-card')
-export class ZoneCard extends LitElement {
+@customElement('trv-card')
+export class TRVCard extends LitElement {
   @property({ type: Object })
-  private zone: ZoneData = defaultZoneData;
+  private trv: TRVDevice | undefined;
+
+  @property({ type: Boolean })
+  private on = false;
 
   static get styles() {
     return [
       SharedStyles,
       css`
         :host {
-          --card-row-height: 50px;
-
           display: inline-flex;
           flex-direction: row;
           justify-content: space-between;
-          width: 400px;
-          height: 250px;
-          margin: 10px;
+          width: 100%;
+          margin: 0px;
+          height: var(--card-row-height);
           color: white;
-          font-size: 20px;
-          border-radius: 5px 5px 0 0;
-          box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.14),
-            0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          padding-left: 15px;
         }
       `,
     ];
@@ -54,24 +53,13 @@ export class ZoneCard extends LitElement {
 
   protected render() {
     return html`
-      <a href="/timer/${this.zone.id}">
-        <zone-header .zone="${this.zone}"></zone-header>
-        ${this.zone.devices.map(item => {
-          switch (item.deviceType) {
-            case DeviceType.trv:
-              return html`<trv-card .trv="${item}"></trv-card>`;
-
-            case DeviceType.sensor:
-              return html`<sensor-card .sensor="${item}"></sensor-card>`;
-
-            case DeviceType.switch:
-              return html`<switch-card .switch="${item}"></switch-card>`;
-
-            default:
-              return html``;
-          }
-        })}
-      </a>
+      ${radiatorIcon}
+      <battery-level .data="${this.trv?.batteryLevel}"></battery-level>
+      <temperature-level
+        .temperature="${this.trv?.temperature}"
+      ></temperature-level
+      >&nbsp;
+      <last-seen .lastSeen="${this.trv?.lastSeen}"></last-seen>
     `;
   }
 }
