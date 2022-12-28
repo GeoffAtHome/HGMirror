@@ -31,7 +31,7 @@ import '@material/mwc-top-app-bar';
 import '@material/mwc-drawer';
 import '@material/mwc-button';
 import '@pwabuilder/pwainstall';
-import './user-login';
+import { logUserIn } from './user-login';
 import './zone-menu';
 import { menuIcon, arrowBackIcon, logOutIcon } from './my-icons';
 import './snack-bar';
@@ -311,6 +311,7 @@ export class MainApp extends connect(store)(LitElement) {
   }
 
   protected firstUpdated() {
+    logUserIn();
     installRouter(location =>
       store.dispatch(navigate(decodeURIComponent(location.href)))
     );

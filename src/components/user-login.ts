@@ -42,6 +42,69 @@ function LogError(text: string, err: any) {
   console.error(`${text}: ${err}`);
 }
 
+async function signIn(
+  username: string,
+  password: string,
+  localaddress: string,
+  useLocalIP: boolean
+) {
+  const authString = `Basic ${btoa(
+    `${username}:${computeHash(username + password)}`
+  )}`;
+
+  const url = 'https://hub.geniushub.co.uk/checkin';
+  let results: any = {};
+  try {
+    const result = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authString,
+      },
+    });
+
+    if (result.status === 200) {
+      results = await result.json();
+      // Test the username and password
+      const credentials = {
+        password,
+        username,
+        localaddress,
+        useLocalIP,
+      };
+      localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
+      localStorage.setItem('loggedIn', 'true');
+      // Remember the serve name as this tends to change.
+      const serverName = `https://${results.data.tunnel.server_name}/v3/zones`;
+      // Remember the serve name as this tends to change.
+      // this.serverName = `http://${localaddress}:1223/v3/zones`;
+
+      store.dispatch(
+        userDataSelectUser(true, serverName, credentials, authString)
+      );
+      fetchHgData(serverName, authString);
+      const newLocation = `/#home`;
+      window.history.pushState({}, '', newLocation);
+      store.dispatch(navigate(decodeURIComponent(newLocation)));
+    }
+  } catch (err) {
+    LogError(JSON.stringify(err), err);
+  }
+}
+
+export function logUserIn() {
+  const credentialsText = localStorage.getItem('credentials');
+  if (credentialsText !== null && credentialsText !== '') {
+    const credentials = JSON.parse(atob(credentialsText));
+    signIn(
+      credentials.username,
+      credentials.password,
+      credentials.localAddress,
+      credentials.useLocalIP
+    );
+  }
+}
+
 @customElement('user-login')
 export class UserLogin extends LitElement {
   @query('#loginForm')
@@ -55,9 +118,6 @@ export class UserLogin extends LitElement {
 
   @property({ type: Boolean })
   private loggedIn: boolean = false;
-
-  @property({ type: Boolean })
-  private inProgress: boolean = true;
 
   protected render() {
     return html`
@@ -87,71 +147,11 @@ export class UserLogin extends LitElement {
   private async loginButton() {
     try {
       this.loginForm.opened = false;
-      this.signIn(this.userName, this.passwordPassword, '192.168.15.225', true);
+      signIn(this.userName, this.passwordPassword, '192.168.15.225', true);
     } catch (err: any) {
       LogError('loginButton', err);
-    }
-  }
-
-  private async signIn(
-    username: string,
-    password: string,
-    localaddress: string,
-    useLocalIP: boolean
-  ) {
-    this.inProgress = true;
-    const authString = `Basic ${btoa(
-      `${username}:${computeHash(username + password)}`
-    )}`;
-
-    const url = 'https://hub.geniushub.co.uk/checkin';
-    let results: any = {};
-    try {
-      const result = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: authString,
-        },
-      });
-
-      if (result.status === 200) {
-        delete this.loginForm.opened;
-        results = await result.json();
-      } else {
-        this.loginForm.opened = true;
-        this.loginForm.error = true;
-      }
-    } catch (err) {
-      LogError(JSON.stringify(err), err);
       this.loginForm.opened = true;
+      this.loginForm.error = true;
     }
-
-    // Test the username and password
-    const credentials = {
-      password,
-      username,
-      localaddress,
-      useLocalIP,
-    };
-    localStorage.setItem('remember', 'on');
-    localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
-    localStorage.setItem('loggedIn', 'true');
-    // Remember the serve name as this tends to change.
-    const serverName = `https://${results.data.tunnel.server_name}/v3/zones`;
-    this.inProgress = false;
-    this.loggedIn = !this.loggedIn;
-    // Remember the serve name as this tends to change.
-    // this.serverName = `http://${localaddress}:1223/v3/zones`;
-    this.inProgress = false;
-    this.loggedIn = !this.loggedIn;
-
-    store.dispatch(
-      userDataSelectUser(true, serverName, credentials, authString)
-    );
-    fetchHgData(serverName, authString);
-    const newLocation = `/#home`;
-    window.history.pushState({}, '', newLocation);
-    store.dispatch(navigate(decodeURIComponent(newLocation)));
   }
 }
