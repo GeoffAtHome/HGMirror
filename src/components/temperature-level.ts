@@ -24,15 +24,16 @@ export class TemperatureLevel extends LitElement {
       SharedStyles,
       css`
         :host {
-          display: inline-block;
-          padding-left: 15px;
-          flex-flow: row;
+          display: inline-flex;
+          flex-direction: row;
+          width: 62px;
+          color: black;
         }
       `,
     ];
   }
 
   protected render() {
-    return html` ${temperatureIcon}${this.temperature}°`;
+    return html`${temperatureIcon}${this.temperature}°`;
   }
 }

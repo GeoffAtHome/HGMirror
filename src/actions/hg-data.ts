@@ -82,6 +82,7 @@ export interface ZoneData {
   id: string;
   mode: ZoneMode;
   isSwitch: boolean;
+  isOn: boolean;
   boost: number;
   devices: Array<Devices>;
 }
@@ -93,6 +94,7 @@ export const defaultZoneData: ZoneData = {
   isSwitch: false,
   boost: -1,
   devices: [],
+  isOn: false,
 };
 
 export interface HgDataState {

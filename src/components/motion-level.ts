@@ -26,7 +26,7 @@ export class MotionLevel extends LitElement {
         :host {
           display: inline-flex;
           flex-direction: row;
-          padding-left: 15px;
+          width: 24px;
         }
       `,
     ];

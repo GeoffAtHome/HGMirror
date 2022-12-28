@@ -98,6 +98,7 @@ export class MainApp extends connect(store)(LitElement) {
       css`
         :host {
           display: block;
+          --mdc-theme-primary: #4285f4;
         }
 
         mwc-drawer[open] mwc-top-app-bar {
@@ -134,7 +135,7 @@ export class MainApp extends connect(store)(LitElement) {
         }
 
         .toolbar-list > a[selected] {
-          background-color: #7413dc23;
+          background-color: #4285f4;
         }
 
         .toolbar-list > a:hover {

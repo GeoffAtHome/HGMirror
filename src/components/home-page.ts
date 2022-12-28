@@ -26,15 +26,21 @@ export class HomePage extends LitElement {
       SharedStyles,
       css`
         :host {
-          display: grid;
+          display: block;
+        }
+
+        div {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
         }
       `,
     ];
   }
 
   protected render() {
-    return html`${this.zones.map(
-      item => html`<zone-card .zone="${item}"></zone-card>`
-    )}`;
+    return html`<div>
+      ${this.zones.map(item => html`<zone-card .zone="${item}"></zone-card>`)}
+    </div>`;
   }
 }

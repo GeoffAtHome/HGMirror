@@ -28,7 +28,7 @@ export class LastSeen extends LitElement {
 
   private intervalID: ReturnType<typeof setInterval> | undefined;
 
-  private value = '14:00';
+  private value = '0';
 
   static get styles() {
     return [
@@ -37,9 +37,8 @@ export class LastSeen extends LitElement {
         :host {
           display: inline-flex;
           flex-direction: row;
-          width: 50px;
-          height: 50px;
           padding-left: 15px;
+          color: black;
         }
       `,
     ];

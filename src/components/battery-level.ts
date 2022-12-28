@@ -10,8 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
-import { defaultZoneData, ZoneData, ZoneMode } from '../actions/hg-data';
+import { property, customElement } from 'lit/decorators.js';
 import { SharedStyles } from './shared-styles';
 
 import {
@@ -62,13 +61,14 @@ export class BatteryLevel extends LitElement {
         :host {
           display: inline-flex;
           flex-direction: row;
-          width: 73px;
+          width: 63px;
+          color: black;
         }
       `,
     ];
   }
 
   protected render() {
-    return html` ${getLevel(this.batteryLevel)}${this.batteryLevel}%`;
+    return html`${getLevel(this.batteryLevel)}${this.batteryLevel}%`;
   }
 }

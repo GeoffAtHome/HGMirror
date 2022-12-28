@@ -37,6 +37,17 @@ if (hgDataSelector(store.getState()) === undefined) {
   });
 }
 
+// Test the username and password
+let credentials = {
+  password: '',
+  username: '',
+  localAddress: '',
+  serverName: '',
+  authString: '',
+  useLocalIP: true,
+  loggedIn: false,
+};
+
 function LogError(text: string, err: any) {
   // eslint-disable-next-line no-console
   console.error(`${text}: ${err}`);
@@ -65,19 +76,16 @@ async function signIn(
 
     if (result.status === 200) {
       results = await result.json();
-      // Test the username and password
-      const credentials = {
-        password,
-        username,
-        localaddress,
-        useLocalIP,
-      };
-      localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
-      localStorage.setItem('loggedIn', 'true');
       // Remember the serve name as this tends to change.
       const serverName = `https://${results.data.tunnel.server_name}/v3/zones`;
       // Remember the serve name as this tends to change.
       // this.serverName = `http://${localaddress}:1223/v3/zones`;
+
+      credentials.loggedIn = true;
+      credentials.authString = authString;
+      credentials.serverName = serverName;
+      localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
+      localStorage.setItem('loggedIn', 'true');
 
       store.dispatch(
         userDataSelectUser(true, serverName, credentials, authString)
@@ -92,10 +100,18 @@ async function signIn(
   }
 }
 
+function getData() {
+  if (credentials.loggedIn) {
+    fetchHgData(credentials.serverName, credentials.authString);
+  }
+}
+
+const dataTimer = setInterval(() => getData(), 10 * 1000);
+
 export function logUserIn() {
   const credentialsText = localStorage.getItem('credentials');
   if (credentialsText !== null && credentialsText !== '') {
-    const credentials = JSON.parse(atob(credentialsText));
+    credentials = JSON.parse(atob(credentialsText));
     signIn(
       credentials.username,
       credentials.password,
@@ -138,12 +154,6 @@ export class UserLogin extends LitElement {
     if (!this.loggedIn) this.loginForm.opened = true;
   }
 
-  private loginEvent(e: CustomEvent<{ username: string; password: string }>) {
-    this.userName = e.detail.username;
-    this.passwordPassword = e.detail.password;
-    this.loginButton();
-  }
-
   private async loginButton() {
     try {
       this.loginForm.opened = false;
@@ -153,5 +163,11 @@ export class UserLogin extends LitElement {
       this.loginForm.opened = true;
       this.loginForm.error = true;
     }
+  }
+
+  private loginEvent(e: CustomEvent<{ username: string; password: string }>) {
+    this.userName = e.detail.username;
+    this.passwordPassword = e.detail.password;
+    this.loginButton();
   }
 }

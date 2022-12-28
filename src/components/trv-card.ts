@@ -10,13 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
-import {
-  defaultZoneData,
-  TRVDevice,
-  ZoneData,
-  ZoneMode,
-} from '../actions/hg-data';
+import { property, customElement } from 'lit/decorators.js';
+import { TRVDevice } from '../actions/hg-data';
 import { SharedStyles } from './shared-styles';
 
 import './zone-header';
@@ -40,7 +35,6 @@ export class TRVCard extends LitElement {
         :host {
           display: inline-flex;
           flex-direction: row;
-          justify-content: space-between;
           width: 100%;
           margin: 0px;
           height: var(--card-row-height);
@@ -53,12 +47,14 @@ export class TRVCard extends LitElement {
 
   protected render() {
     return html`
-      ${radiatorIcon}
-      <battery-level .data="${this.trv?.batteryLevel}"></battery-level>
+      <div>
+        ${radiatorIcon}<battery-level
+          .data="${this.trv?.batteryLevel}"
+        ></battery-level>
+      </div>
       <temperature-level
         .temperature="${this.trv?.temperature}"
-      ></temperature-level
-      >&nbsp;
+      ></temperature-level>
       <last-seen .lastSeen="${this.trv?.lastSeen}"></last-seen>
     `;
   }

@@ -33,7 +33,6 @@ export class SensorCard extends LitElement {
         :host {
           display: inline-flex;
           flex-direction: row;
-          justify-content: space-between;
           width: 100%;
           margin: 0px;
           height: var(--card-row-height);
@@ -46,8 +45,11 @@ export class SensorCard extends LitElement {
 
   protected render() {
     return html`
-      ${sensorIcon}
-      <battery-level .data="${this.sensor?.batteryLevel}"></battery-level>
+      <div>
+        ${sensorIcon}<battery-level
+          .data="${this.sensor?.batteryLevel}"
+        ></battery-level>
+      </div>
       <temperature-level
         .temperature="${this.sensor?.temperature}"
       ></temperature-level>

@@ -10,11 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { defaultZoneData, ZoneData, ZoneMode } from '../actions/hg-data';
 import { boostIcon, footprintIcon, offIcon, timerIcon } from './my-icons';
 import './last-seen';
 import { SharedStyles } from './shared-styles';
+import '@material/mwc-icon-button';
+import { ZoneCard } from './zone-card';
 
 @customElement('zone-header')
 export class ZoneHeader extends LitElement {
@@ -29,10 +31,11 @@ export class ZoneHeader extends LitElement {
           display: inline-flex;
           flex-direction: row;
           justify-content: space-between;
-          width: 100%;
           height: var(--card-row-height);
+          width: 100%;
+          margin: 0px;
           color: white;
-          background-color: var(--app-primary-color);
+          background-color: var(--card-primary-color);
           font-size: 20px;
           border-radius: 5px 5px 0 0;
           box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.14),
@@ -40,35 +43,32 @@ export class ZoneHeader extends LitElement {
         }
 
         :host([on]) {
-          background-color: orange;
+          background-color: var(--card-primary-color-on);
+          text-align: center;
         }
 
-        .container {
-          flex: 0 1 2 3 auto 4 5;
+        .btnx {
+          display: inline-flex;
+          flex-direction: row;
+          justify-content: space-between;
+          height: var(--card-row-height);
         }
 
-        paper-icon-button {
-          margin: 0px;
+        mwc-icon-button {
+          --mdc-icon-button-size: 24px;
           padding: 1px;
-          width: 28px;
-          height: 28px;
-          bottom: 3px;
-          color: white;
         }
 
-        paper-icon-button:hover {
-          background-color: var(--paper-green-500);
-          color: white;
+        mwc-icon-button:hover {
+          color: red;
         }
 
-        paper-icon-button.on {
-          --paper-icon-button-ink-color: pink;
+        mwc-icon-button.on {
           color: black;
         }
 
-        paper-icon-button.on:hover {
-          background-color: var(--paper-pink-500);
-          color: white;
+        mwc-icon-button.on:hover {
+          color: black;
         }
       `,
     ];
@@ -76,20 +76,47 @@ export class ZoneHeader extends LitElement {
 
   protected render() {
     return html`
-      <div>
-        <a href="/home/[[zone.iID]]/off">${offIcon}</a>
-        <a href="/boost/[[zone.iID]]">${boostIcon}</a>
-        <a href="/home/[[zone.iID]]/timer">${timerIcon}</a>
+      <div class="btnx">
+        <mwc-icon-button
+          class="btn  ${this.zone.mode === ZoneMode.ModeOff ? 'on' : 'off'}"
+          title="off"
+          slot="actionItems"
+          >${offIcon}</mwc-icon-button
+        >
+
+        <mwc-icon-button
+          class="${this.zone.mode === ZoneMode.ModeBoost ? 'on' : 'off'}"
+          title="boost"
+          slot="actionItems"
+          >${boostIcon}</mwc-icon-button
+        >
+
+        <mwc-icon-button
+          class="${this.zone.mode === ZoneMode.ModeTimer ? 'on' : 'off'}"
+          title="on"
+          slot="actionItems"
+          >${timerIcon}</mwc-icon-button
+        >
+
         ${this.zone.isSwitch === true
           ? html``
-          : html`<a href="/home/[[zone.iID]]/footprint">${footprintIcon}</a>`}
+          : html`
+              <mwc-icon-button
+                class="${this.zone.mode === ZoneMode.ModeFootprint
+                  ? 'on'
+                  : 'off'}"
+                title="footprint"
+                slot="actionItems"
+                >${footprintIcon}</mwc-icon-button
+              >
+            `}
       </div>
-      <div>
-        <span>${this.zone.name}</span>
-      </div>
-      <div>
-        <last-seen .lastSeen="${this.zone.boost}"></last-seen>
-      </div>
+      <div>${this.zone.name}</div>
+      ${this.zone.mode === ZoneMode.ModeBoost
+        ? html` <div>
+            <last-seen down .lastSeen="${this.zone.boost}"></last-seen>
+          </div>`
+        : html``}
     `;
   }
 }

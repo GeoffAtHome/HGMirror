@@ -2,5 +2,5 @@
   "files.associations": {
     "*.yaml": "home-assistant"
   },
-  "cSpell.words": ["vaadin"]
+  "cSpell.words": ["Comms", "vaadin"]
 }

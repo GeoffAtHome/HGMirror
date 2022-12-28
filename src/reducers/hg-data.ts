@@ -91,14 +91,14 @@ function getDevices(item: any): Array<Devices> {
     } else if (node.childValues.SwitchBinary !== undefined) {
       const switchDevice: SwitchDevice = {
         deviceType: DeviceType.switch,
-        onOff: node.childValues.SwitchBinary === 1,
+        onOff: item.bIsActive,
         lastSeen: node.childValues.lastComms.val,
       };
       devices.push(switchDevice);
     }
   }
 
-  return devices;
+  return devices.sort((a, b) => b.deviceType - a.deviceType);
 }
 
 function getZone(item: any): ZoneData {
@@ -109,6 +109,7 @@ function getZone(item: any): ZoneData {
     isSwitch: item.nodes[0].childValues.SwitchBinary !== undefined,
     boost: item.iMode === ZoneMode.ModeBoost ? item.iBoostTimeRemaining : -1,
     devices: getDevices(item),
+    isOn: item.bIsActive,
   };
 
   return zoneItem;

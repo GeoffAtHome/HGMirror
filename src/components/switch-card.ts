@@ -10,19 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
-import {
-  defaultZoneData,
-  SwitchDevice,
-  ZoneData,
-  ZoneMode,
-} from '../actions/hg-data';
+import { property, customElement } from 'lit/decorators.js';
+import { SwitchDevice } from '../actions/hg-data';
 import { SharedStyles } from './shared-styles';
 
 import './zone-header';
 import './battery-level';
 import './last-seen';
-import { powerIcon, radiatorIcon } from './my-icons';
 
 @customElement('switch-card')
 export class SwitchCard extends LitElement {
@@ -37,23 +31,18 @@ export class SwitchCard extends LitElement {
       SharedStyles,
       css`
         :host {
-          display: inline-flex;
-          flex-direction: row;
-          justify-content: space-between;
+          display: grid;
+          place-items: center;
+          font-size: 50px;
           width: 100%;
-          margin: 0px;
-          height: var(--card-row-height);
-          color: white;
-          padding-left: 15px;
+          line-height: 122px;
+          color: black;
         }
       `,
     ];
   }
 
   protected render() {
-    return html`
-      ${powerIcon} ${this.switch?.onOff ? html`ON` : html`OFF`}
-      <last-seen .lastSeen="${this.switch?.lastSeen}"></last-seen>
-    `;
+    return html`${this.switch?.onOff ? html`ON` : html`OFF`} `;
   }
 }

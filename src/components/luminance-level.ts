@@ -26,7 +26,9 @@ export class LuminanceLevel extends LitElement {
         :host {
           display: inline-block;
           flex-flow: row;
-          height: 50px;
+          width: 55px;
+          padding-left: 15px;
+          color: black;
         }
       `,
     ];
