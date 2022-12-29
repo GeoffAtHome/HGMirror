@@ -1,6 +1,6 @@
 /**
  * Usage:
- * import { loadGoogleCharts } from 'vue-google-charts'
+ * import { loadGoogleCharts } from 'chart-loader'
  *
  * loadGoogleCharts('current', { packages: ['corechart', 'map'] })
  *  .then(google => {

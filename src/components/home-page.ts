@@ -40,7 +40,10 @@ export class HomePage extends LitElement {
 
   protected render() {
     return html`<div>
-      ${this.zones.map(item => html`<zone-card .zone="${item}"></zone-card>`)}
+      ${this.zones.map(
+        (item, index) =>
+          html`<zone-card .zone="${item}" .index="${index}"></zone-card>`
+      )}
     </div>`;
   }
 }

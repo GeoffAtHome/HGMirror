@@ -32,6 +32,9 @@ export class ZoneCard extends LitElement {
   @property({ type: Object })
   private zone: ZoneData = defaultZoneData;
 
+  @property({ type: Number })
+  private index = 0;
+
   static get styles() {
     return [
       SharedStyles,
@@ -67,7 +70,7 @@ export class ZoneCard extends LitElement {
   protected render() {
     return html`
       <div>
-        <a href="/timer/${this.zone.id}">
+        <a href="/#timers#${this.index}">
           <zone-header .zone="${this.zone}"></zone-header>
           ${this.zone.devices.map(item => {
             switch (item.deviceType) {
