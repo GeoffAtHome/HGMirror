@@ -70,6 +70,5 @@ export class LastSeen extends LitElement {
     const lmz = minutes < 10 ? '0' : '';
     const lsz = seconds < 10 ? '0' : '';
     this.value = `${lmz + minutes}:${lsz}${seconds}`;
-    console.log(`Value:${this.value}`);
   }
 }

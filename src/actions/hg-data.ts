@@ -22,15 +22,12 @@ export interface HgData {
   data: Object;
 }
 
-// Mode_Off: 1,
-// Mode_Timer: 2,
-// Mode_Footprint: 4,
-// Mode_Away: 8,
-// Mode_Boost: 16,
-// Mode_Early: 32,
-// Mode_Test: 64,
-// Mode_Linked: 128,
-// Mode_Other: 256
+export interface HgTimer {
+  bReactive?: number;
+  fSP: number;
+  iDay: number;
+  iTm: number;
+}
 
 // eslint-disable-next-line no-shadow
 export enum ZoneMode {
@@ -85,6 +82,7 @@ export interface ZoneData {
   isOn: boolean;
   boost: number;
   devices: Array<Devices>;
+  objTimer: Array<HgTimer>;
 }
 
 export const defaultZoneData: ZoneData = {
@@ -94,6 +92,7 @@ export const defaultZoneData: ZoneData = {
   isSwitch: false,
   boost: -1,
   devices: [],
+  objTimer: [],
   isOn: false,
 };
 

@@ -21,6 +21,7 @@ import { RootAction } from '../store';
 
 export interface AppState {
   page: string;
+  subPage: string;
   offline: boolean;
   message: string;
   drawerOpened: boolean;
@@ -30,6 +31,7 @@ export interface AppState {
 
 const INITIAL_STATE: AppState = {
   page: '',
+  subPage: '',
   offline: false,
   message: '',
   drawerOpened: false,
@@ -37,12 +39,14 @@ const INITIAL_STATE: AppState = {
   title: '',
 };
 
+// eslint-disable-next-line default-param-last
 const app: Reducer<AppState, RootAction> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UPDATE_PAGE:
       return {
         ...state,
         page: action.page,
+        subPage: action.subPage,
       };
     case UPDATE_OFFLINE:
       return {

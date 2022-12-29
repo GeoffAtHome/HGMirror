@@ -104,11 +104,12 @@ function getDevices(item: any): Array<Devices> {
 function getZone(item: any): ZoneData {
   const zoneItem: ZoneData = {
     name: item.strName,
-    id: '',
+    id: item.iID,
     mode: item.iMode,
     isSwitch: item.nodes[0].childValues.SwitchBinary !== undefined,
     boost: item.iMode === ZoneMode.ModeBoost ? item.iBoostTimeRemaining : -1,
     devices: getDevices(item),
+    objTimer: item.objTimer,
     isOn: item.bIsActive,
   };
 

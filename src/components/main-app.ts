@@ -74,6 +74,9 @@ export class MainApp extends connect(store)(LitElement) {
   @property({ type: String })
   private _page = '';
 
+  @property({ type: String })
+  private _subPage = '';
+
   @property({ type: Boolean })
   private _drawerOpened = false;
 
@@ -239,9 +242,15 @@ export class MainApp extends connect(store)(LitElement) {
             <a ?selected="${this._page === 'welcome'}" href="/#welcome"
               >Welcome</a
             >
+            <a ?selected="${this._page === 'timer'}" href="/#timers#-1"
+              >All zones</a
+            >
             ${this._zones.map(
-              item =>
-                html`<a ?selected="${this._page === 'welcome'}" href="/#welcome"
+              (item, index) =>
+                html`<a
+                  ?selected="${this._page === 'timers' &&
+                  this._subPage === index.toString()}"
+                  href="/#timers#${index}"
                   >${item.name}</a
                 >`
             )}
@@ -282,6 +291,13 @@ export class MainApp extends connect(store)(LitElement) {
                       class="page"
                       ?active="${this._page === 'welcome'}"
                     ></welcome-page>
+                    <timer-card
+                      class="page"
+                      ?active="${this._page === 'timers'}"
+                      .zones="${this._zones}"
+                      .zoneId="${this._subPage}"
+                      .allZones="${this._subPage === '-1'}"
+                    ></timer-card>
                     <my-view404
                       class="page"
                       ?active="${this._page === 'view404'}"
@@ -330,6 +346,7 @@ export class MainApp extends connect(store)(LitElement) {
 
   stateChanged(state: RootState) {
     this._page = state.app!.page;
+    this._subPage = state.app!.subPage;
     this._message = state.app!.message;
 
     const usersState = userDataSelector(state);
