@@ -86,6 +86,12 @@ export class MainApp extends connect(store)(LitElement) {
   @property({ type: String })
   private _message: string = '';
 
+  @property({ type: String })
+  private _serverName: string = '';
+
+  @property({ type: String })
+  private _authString: string = '';
+
   @property({ type: Boolean })
   private _loggedIn: boolean = false;
 
@@ -286,6 +292,8 @@ export class MainApp extends connect(store)(LitElement) {
                       class="page"
                       ?active="${this._page === 'home'}"
                       .zones="${this._zones}"
+                      .authString="${this._authString}"
+                      .serverName="${this._serverName}"
                     ></home-page>
                     <welcome-page
                       class="page"
@@ -351,6 +359,8 @@ export class MainApp extends connect(store)(LitElement) {
 
     const usersState = userDataSelector(state);
     this._loggedIn = usersState!._loggedIn;
+    this._authString = usersState!._authString;
+    this._serverName = usersState!._serverName;
 
     this._snackbarOpened = state.app!.snackbarOpened;
     this._drawerOpened = state.app!.drawerOpened;

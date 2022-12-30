@@ -39,8 +39,6 @@ if (hgDataSelector(store.getState()) === undefined) {
 
 // Test the username and password
 let credentials = {
-  password: '',
-  username: '',
   localAddress: '',
   serverName: '',
   authString: '',
@@ -54,15 +52,10 @@ function LogError(text: string, err: any) {
 }
 
 async function signIn(
-  username: string,
-  password: string,
+  authString: string,
   localaddress: string,
   useLocalIP: boolean
 ) {
-  const authString = `Basic ${btoa(
-    `${username}:${computeHash(username + password)}`
-  )}`;
-
   const url = 'https://hub.geniushub.co.uk/checkin';
   let results: any = {};
   try {
@@ -87,9 +80,7 @@ async function signIn(
       localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
       localStorage.setItem('loggedIn', 'true');
 
-      store.dispatch(
-        userDataSelectUser(true, serverName, credentials, authString)
-      );
+      store.dispatch(userDataSelectUser(true, serverName, authString));
       fetchHgData(serverName, authString);
       const newLocation = `/#home`;
       window.history.pushState({}, '', newLocation);
@@ -113,8 +104,7 @@ export function logUserIn() {
   if (credentialsText !== null && credentialsText !== '') {
     credentials = JSON.parse(atob(credentialsText));
     signIn(
-      credentials.username,
-      credentials.password,
+      credentials.authString,
       credentials.localAddress,
       credentials.useLocalIP
     );
@@ -125,12 +115,6 @@ export function logUserIn() {
 export class UserLogin extends LitElement {
   @query('#loginForm')
   private loginForm: any;
-
-  @property({ type: String })
-  private userName: string = '';
-
-  @property({ type: String })
-  private passwordPassword: string = '';
 
   @property({ type: Boolean })
   private loggedIn: boolean = false;
@@ -154,20 +138,20 @@ export class UserLogin extends LitElement {
     if (!this.loggedIn) this.loginForm.opened = true;
   }
 
-  private async loginButton() {
+  private loginEvent(e: CustomEvent<{ username: string; password: string }>) {
+    const authString = `Basic ${btoa(
+      `${e.detail.username}:${computeHash(
+        e.detail.username + e.detail.password
+      )}`
+    )}`;
+
     try {
       this.loginForm.opened = false;
-      signIn(this.userName, this.passwordPassword, '192.168.15.225', true);
+      signIn(authString, '192.168.15.225', true);
     } catch (err: any) {
       LogError('loginButton', err);
       this.loginForm.opened = true;
       this.loginForm.error = true;
     }
-  }
-
-  private loginEvent(e: CustomEvent<{ username: string; password: string }>) {
-    this.userName = e.detail.username;
-    this.passwordPassword = e.detail.password;
-    this.loginButton();
   }
 }

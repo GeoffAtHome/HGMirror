@@ -11,12 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 import { LitElement, html, css, PropertyValueMap } from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement, query } from 'lit/decorators.js';
-import {
-  defaultZoneData,
-  DeviceType,
-  ZoneData,
-  ZoneMode,
-} from '../actions/hg-data';
+import { defaultZoneData, DeviceType, ZoneData } from '../actions/hg-data';
 import { SharedStyles } from './shared-styles';
 
 import './zone-header';
@@ -31,6 +26,12 @@ export class ZoneCard extends LitElement {
 
   @property({ type: Object })
   private zone: ZoneData = defaultZoneData;
+
+  @property({ type: String })
+  private serverName: string = '';
+
+  @property({ type: String })
+  private authString: string = '';
 
   @property({ type: Number })
   private index = 0;
@@ -71,7 +72,11 @@ export class ZoneCard extends LitElement {
     return html`
       <div>
         <a href="/#timers#${this.index}">
-          <zone-header .zone="${this.zone}"></zone-header>
+          <zone-header
+            .zone="${this.zone}"
+            .authString="${this.authString}"
+            .serverName="${this.serverName}"
+          ></zone-header>
           ${this.zone.devices.map(item => {
             switch (item.deviceType) {
               case DeviceType.trv:

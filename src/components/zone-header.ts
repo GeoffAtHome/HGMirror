@@ -10,18 +10,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement } from 'lit/decorators.js';
+import { property, customElement, query } from 'lit/decorators.js';
 import { defaultZoneData, ZoneData, ZoneMode } from '../actions/hg-data';
 import { boostIcon, footprintIcon, offIcon, timerIcon } from './my-icons';
 import './last-seen';
 import { SharedStyles } from './shared-styles';
 import '@material/mwc-icon-button';
-import { ZoneCard } from './zone-card';
+import { updateHgMode } from '../reducers/hg-data';
 
 @customElement('zone-header')
 export class ZoneHeader extends LitElement {
   @property({ type: Object })
   private zone: ZoneData = defaultZoneData;
+
+  @property({ type: String })
+  private serverName: string = '';
+
+  @property({ type: String })
+  private authString: string = '';
 
   static get styles() {
     return [
@@ -47,11 +53,8 @@ export class ZoneHeader extends LitElement {
           text-align: center;
         }
 
-        .btnx {
+        .btn {
           display: inline-flex;
-          flex-direction: row;
-          justify-content: space-between;
-          height: var(--card-row-height);
         }
 
         mwc-icon-button {
@@ -74,13 +77,42 @@ export class ZoneHeader extends LitElement {
     ];
   }
 
+  private boostMode(event: PointerEvent) {
+    const myEvent = new CustomEvent<{ id: string; name: string }>(
+      'boost-dialog',
+      {
+        composed: true,
+        bubbles: true,
+        detail: {
+          id: this.zone.id,
+          name: this.zone.name,
+        },
+      }
+    );
+    this.dispatchEvent(myEvent);
+    event.preventDefault();
+  }
+
+  private changeMode(event: PointerEvent) {
+    event.preventDefault();
+
+    const target = event.currentTarget;
+
+    if (target instanceof Element) {
+      const mode = Number(target.getAttribute('mode'));
+      updateHgMode(this.serverName, this.authString, this.zone.id, mode);
+    }
+  }
+
   protected render() {
     return html`
-      <div class="btnx">
+      <div class="btn">
         <mwc-icon-button
           class="btn  ${this.zone.mode === ZoneMode.ModeOff ? 'on' : 'off'}"
           title="off"
           slot="actionItems"
+          mode="${ZoneMode.ModeOff}"
+          @click="${this.changeMode}"
           >${offIcon}</mwc-icon-button
         >
 
@@ -88,6 +120,8 @@ export class ZoneHeader extends LitElement {
           class="${this.zone.mode === ZoneMode.ModeBoost ? 'on' : 'off'}"
           title="boost"
           slot="actionItems"
+          mode="${ZoneMode.ModeBoost}"
+          @click="${this.boostMode}"
           >${boostIcon}</mwc-icon-button
         >
 
@@ -95,6 +129,8 @@ export class ZoneHeader extends LitElement {
           class="${this.zone.mode === ZoneMode.ModeTimer ? 'on' : 'off'}"
           title="on"
           slot="actionItems"
+          mode="${ZoneMode.ModeTimer}"
+          @click="${this.changeMode}"
           >${timerIcon}</mwc-icon-button
         >
 
@@ -107,6 +143,8 @@ export class ZoneHeader extends LitElement {
                   : 'off'}"
                 title="footprint"
                 slot="actionItems"
+                mode="${ZoneMode.ModeFootprint}"
+                @click="${this.changeMode}"
                 >${footprintIcon}</mwc-icon-button
               >
             `}

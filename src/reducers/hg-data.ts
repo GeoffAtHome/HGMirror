@@ -121,6 +121,32 @@ function LogError(text: string, err: any) {
   console.error(`${text}: ${err}`);
 }
 
+export async function updateHgMode(
+  serverName: string,
+  authString: string,
+  zoneId: string,
+  mode: number
+) {
+  const url = `${serverName.slice(0, -1)}/${zoneId}`;
+  let results: any = {};
+  try {
+    const data = { iMode: mode };
+    const result = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authString,
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (result.status === 200) {
+      results = await result.json();
+    }
+  } catch (err) {
+    LogError(JSON.stringify(err), err);
+  }
+}
 export async function fetchHgData(serverName: string, authString: string) {
   const url = serverName;
   let results: any = {};
