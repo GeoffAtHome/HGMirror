@@ -1,15 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-plusplus */
 /* eslint-disable lit-a11y/click-events-have-key-events */
-import {
-  LitElement,
-  html,
-  css,
-  svg,
-  TemplateResult,
-  BooleanAttributePart,
-  PropertyValueMap,
-} from 'lit';
+import { LitElement, html, css, PropertyValueMap } from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement, query } from 'lit/decorators.js';
 import './time-picker';
@@ -38,7 +30,6 @@ export class BootDialog extends LitElement {
 
   render() {
     return html`
-      <time-picker></time-picker>
       <mwc-dialog id="boost" heading="${this.name}">
       <div>
           <div>
@@ -53,25 +44,16 @@ export class BootDialog extends LitElement {
             <mwc-button >Temperature</mwc-button></div>
           <div>
             <mwc-textfield
-              id="time"
-              dialogInitialFocus
-              type="number"
-              autoValidate
-              min="1"
-              max="999"
-              maxlength="3"
-              pattern="[0-9][0-9][0-9]"
-              validationMessage="Value needs to be between 1 and 999"
-              required
               label="Time"
+              @click=${this.openTimePicker}
             ></mwc-textfield>
-            <mwc-button @click=${this.openTimePicker} >Time</mwc-button>
           </div>
           </div>
         </div>
         <mwc-button id="addUpdate" slot="secondaryAction" @click="${this.close}">Cancel</mwc-button>
         <mwc-button slot="primaryAction">Apply</mwc-button>
         </mwc-dialog>
+        <time-picker></time-picker>
     `;
   }
 

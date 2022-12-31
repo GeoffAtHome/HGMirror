@@ -1,7 +1,14 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-plusplus */
 /* eslint-disable lit-a11y/click-events-have-key-events */
-import { LitElement, html, css, svg, TemplateResult } from 'lit';
+import {
+  LitElement,
+  html,
+  css,
+  svg,
+  TemplateResult,
+  PropertyValueMap,
+} from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement, query } from 'lit/decorators.js';
 // eslint-disable-next-line import/extensions
@@ -56,6 +63,64 @@ const hourPos = (() => {
   return pos;
 })();
 
+const getHours24 = () => {
+  const numberPos = hourPos;
+  const numbers = [];
+
+  for (let i = 0; i < 24; i++) {
+    const j = i;
+    numbers.push(svg`<text
+                      class='clock-number'
+                      alignment-baseline='middle'
+                      text-anchor='middle'
+                      transform='translate(${numberPos[j].x}, ${
+      numberPos[j].y
+    })'>
+            ${i + 1}
+        </text>`);
+  }
+
+  return numbers;
+};
+
+const getHours12 = () => {
+  const numberPos = hourPos;
+  const numbers = [];
+
+  for (let i = 0; i < 12; i++) {
+    const j = i;
+    numbers.push(svg`<text
+                      class='clock-number'
+                      alignment-baseline='middle'
+                      text-anchor='middle'
+                      transform='translate(${numberPos[j].x}, ${
+      numberPos[j].y
+    })'>
+            ${i + 1}
+        </text>`);
+  }
+
+  return numbers;
+};
+
+const getMinutes = () => {
+  const numberPos = minutePos;
+  const numbers = [];
+
+  for (let i = 0; i < 12; i++) {
+    const j = i * 5;
+    numbers.push(svg`<text
+                      class='clock-number'
+                      alignment-baseline='middle'
+                      text-anchor='middle'
+                      transform='translate(${numberPos[j].x}, ${numberPos[j].y})'>
+            ${j}
+        </text>`);
+  }
+
+  return numbers;
+};
+
 function _pad(n: number) {
   return `${'0'.repeat(2)}${n}`.slice(`${n}`.length);
 }
@@ -83,6 +148,18 @@ export class TimePicker extends LitElement {
   @property({ type: Boolean })
   private amPm = false;
 
+  @property({ type: Boolean, reflect: true })
+  hourSelected = this._step === 0;
+
+  @property({ type: Boolean, reflect: true })
+  minuteSelected = this._step === 1;
+
+  @property({ type: Boolean, reflect: true })
+  amSelected = this._amSelected;
+
+  @property({ type: Boolean, reflect: true })
+  pmSelected = !this._amSelected;
+
   private _svgPt: any;
 
   private _resolve: any;
@@ -95,6 +172,11 @@ export class TimePicker extends LitElement {
     return [
       SharedStyles,
       css`
+        :host {
+          position: absolute;
+          z-index: 10;
+        }
+
         #time-picker {
           display: none;
           user-select: none;
@@ -250,6 +332,9 @@ export class TimePicker extends LitElement {
                 @mousedown="${this._onClockMouseDown}"
                 @mousemove="${this._onClockMouseMove}"
                 @mouseup="${this._onClockMouseUp}"
+                @touchstart="${this._onClockTouchStart}"
+                @touchmove="${this._onClockTouchMove}"
+                @touchend="${this._onClockTouchEnd}"
               >
                 <g transform="translate(50,50)">
                   <circle class="clock-face" r="44" />
@@ -267,7 +352,11 @@ export class TimePicker extends LitElement {
                     transform="translate(${numberPos[selectedNum]
                       .x}, ${numberPos[selectedNum].y})"
                   />
-                  ${this._getNumber()}
+                  ${this._step === 1
+                    ? getMinutes()
+                    : this._amSelected
+                    ? getHours24()
+                    : getHours12()}
                 </g>
               </svg>
             </div>
@@ -284,6 +373,13 @@ export class TimePicker extends LitElement {
 
   firstUpdated() {
     this._svgPt = this._svg.createSVGPoint();
+  }
+
+  protected updated() {
+    this.hourSelected = this._step === 0;
+    this.minuteSelected = this._step === 1;
+    this.amSelected = this._amSelected;
+    this.pmSelected = !this._amSelected;
   }
 
   open() {
@@ -308,9 +404,9 @@ export class TimePicker extends LitElement {
     );
   }
 
-  _updateClock(e: MouseEvent) {
-    this._svgPt.x = e.clientX;
-    this._svgPt.y = e.clientY;
+  _updateClock(x: number, y: number) {
+    this._svgPt.x = x;
+    this._svgPt.y = y;
 
     const cursorPt = this._svgPt.matrixTransform(
       this._svg.getScreenCTM()?.inverse()
@@ -347,16 +443,39 @@ export class TimePicker extends LitElement {
 
   _onClockMouseDown(e: MouseEvent) {
     this._mouseDown = true;
-    this._updateClock(e);
+    this._updateClock(e.clientX, e.clientY);
   }
 
   _onClockMouseMove(e: MouseEvent) {
     if (this._mouseDown) {
-      this._updateClock(e);
+      this._updateClock(e.clientX, e.clientY);
     }
   }
 
   _onClockMouseUp(_e: MouseEvent) {
+    this._mouseDown = false;
+    if (this._step === 0) {
+      this._step = 1;
+    }
+  }
+
+  _onClockTouchStart(e: TouchEvent) {
+    e.preventDefault();
+    this._mouseDown = true;
+    this._updateClock(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+  }
+
+  _onClockTouchMove(e: TouchEvent) {
+    e.preventDefault();
+    if (this._mouseDown) {
+      this._updateClock(
+        e.changedTouches[0].clientX,
+        e.changedTouches[0].clientY
+      );
+    }
+  }
+
+  _onClockTouchEnd(_e: TouchEvent) {
     this._mouseDown = false;
     if (this._step === 0) {
       this._step = 1;
@@ -369,26 +488,5 @@ export class TimePicker extends LitElement {
 
   _setAM(am: boolean) {
     this._amSelected = am;
-  }
-
-  _getNumber() {
-    const numberPos = this._step === 0 ? hourPos : minutePos;
-    const numbers = [];
-
-    for (let i = 0; i < (this._step === 0 ? (this.amPm ? 12 : 24) : 12); i++) {
-      const j = this._step === 0 ? i : i * 5;
-      numbers.push(svg`
-                                <text
-                                    class='clock-number'
-                                    alignment-baseline='middle'
-                                    text-anchor='middle'
-                                    transform='translate(${numberPos[j].x}, ${
-        numberPos[j].y
-      })'>
-                                    ${this._step === 0 ? i + 1 : j}
-                                </text>`);
-    }
-
-    return numbers;
   }
 }
