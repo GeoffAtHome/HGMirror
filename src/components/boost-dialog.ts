@@ -12,6 +12,12 @@ import { SharedStyles } from './shared-styles';
 
 @customElement('boost-dialog')
 export class BootDialog extends LitElement {
+  @query('#temperature')
+  private temperature!: any;
+
+  @query('#time')
+  private time!: any;
+
   @query('time-picker')
   private timePicker!: any;
 
@@ -20,6 +26,9 @@ export class BootDialog extends LitElement {
 
   @property({ type: String })
   private name = 'Test heading';
+
+  @property({ type: String })
+  private duration = '2:30';
 
   @property({ type: Boolean, reflect: true })
   _open = false;
@@ -30,7 +39,7 @@ export class BootDialog extends LitElement {
 
   render() {
     return html`
-      <mwc-dialog id="boost" heading="${this.name}">
+      <mwc-dialog heading="Boost ${this.name}">
       <div>
           <div>
             <mwc-textfield
@@ -41,9 +50,9 @@ export class BootDialog extends LitElement {
               required
               minlength="1"
             ></mwc-textfield>
-            <mwc-button >Temperature</mwc-button></div>
-          <div>
+  </div><div>
             <mwc-textfield
+            id="time"
               label="Time"
               @click=${this.openTimePicker}
             ></mwc-textfield>
@@ -53,7 +62,7 @@ export class BootDialog extends LitElement {
         <mwc-button id="addUpdate" slot="secondaryAction" @click="${this.close}">Cancel</mwc-button>
         <mwc-button slot="primaryAction">Apply</mwc-button>
         </mwc-dialog>
-        <time-picker></time-picker>
+        <time-picker .time=${this.duration} duration @time-picker-cancelled=${this.timePickerCancelled} @time-picker-ok=${this.timePickerOK}></time-picker>
     `;
   }
 
@@ -69,6 +78,20 @@ export class BootDialog extends LitElement {
   }
 
   openTimePicker(_event: Event) {
-    this.timePicker.open();
+    this.boostDialog.close();
+    this.timePicker.show();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  timePickerCancelled(_e: Event) {
+    this.boostDialog.show();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  timePickerOK(event: Event) {
+    this.boostDialog.show();
+
+    const target = event.target as any;
+    this.time.value = target.time;
   }
 }

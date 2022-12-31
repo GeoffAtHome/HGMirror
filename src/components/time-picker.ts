@@ -1,18 +1,9 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-plusplus */
 /* eslint-disable lit-a11y/click-events-have-key-events */
-import {
-  LitElement,
-  html,
-  css,
-  svg,
-  TemplateResult,
-  PropertyValueMap,
-} from 'lit';
+import { LitElement, html, css, svg, PropertyValueMap } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
-// eslint-disable-next-line import/extensions
-import { Directive, directive } from 'lit/directive.js';
+import { property, customElement, query, state } from 'lit/decorators.js';
 // eslint-disable-next-line import/extensions
 import { classMap } from 'lit/directives/class-map.js';
 import '@material/mwc-button';
@@ -63,6 +54,28 @@ const hourPos = (() => {
   return pos;
 })();
 
+const durationPos = (() => {
+  const pos: TimeData = {};
+  const segment = (2 * Math.PI) / 12;
+  const offset = Math.PI / 2;
+
+  for (let i = 0; i < 12; i++) {
+    pos[i] = {
+      x: 36 * Math.cos(segment * i - offset),
+      y: 36 * Math.sin(segment * i - offset),
+    };
+  }
+
+  for (let i = 0; i < 12; i++) {
+    pos[i + 12] = {
+      x: 24 * Math.cos(segment * i - offset),
+      y: 24 * Math.sin(segment * i - offset),
+    };
+  }
+
+  return pos;
+})();
+
 const getHours24 = () => {
   const numberPos = hourPos;
   const numbers = [];
@@ -77,6 +90,23 @@ const getHours24 = () => {
       numberPos[j].y
     })'>
             ${i + 1}
+        </text>`);
+  }
+
+  return numbers;
+};
+
+const getDurationHours = () => {
+  const numberPos = durationPos;
+  const numbers = [];
+
+  for (let i = 0; i < 24; i++) {
+    numbers.push(svg`<text
+                      class='clock-number'
+                      alignment-baseline='middle'
+                      text-anchor='middle'
+                      transform='translate(${numberPos[i].x}, ${numberPos[i].y})'>
+            ${i}
         </text>`);
   }
 
@@ -121,6 +151,16 @@ const getMinutes = () => {
   return numbers;
 };
 
+function keepInRange(num: number, min: number, max: number): number {
+  if (num < min) {
+    return min;
+  }
+  if (num > max) {
+    return max;
+  }
+  return num;
+}
+
 function _pad(n: number) {
   return `${'0'.repeat(2)}${n}`.slice(`${n}`.length);
 }
@@ -131,40 +171,30 @@ export class TimePicker extends LitElement {
   private _svg!: SVGSVGElement;
 
   @property({ type: Boolean })
-  private _open = false;
-
-  @property({ type: Number })
-  private _hour = 0;
-
-  @property({ type: Number })
-  private _minute = 0;
-
-  @property({ type: Number })
-  private _step = 0;
-
-  @property({ type: Boolean })
-  private _amSelected = true;
-
-  @property({ type: Boolean })
   private amPm = false;
 
   @property({ type: Boolean, reflect: true })
-  hourSelected = this._step === 0;
+  private duration = false;
 
-  @property({ type: Boolean, reflect: true })
-  minuteSelected = this._step === 1;
+  @property({ type: String })
+  time = '0:00';
 
-  @property({ type: Boolean, reflect: true })
-  amSelected = this._amSelected;
+  @state()
+  _open = false;
 
-  @property({ type: Boolean, reflect: true })
-  pmSelected = !this._amSelected;
+  @property({ type: Number })
+  _hour = 0;
+
+  @property({ type: Number })
+  _minute = 0;
+
+  @state()
+  _step = 0;
+
+  @state()
+  _amSelected = true;
 
   private _svgPt: any;
-
-  private _resolve: any;
-
-  private _reject: any;
 
   private _mouseDown: boolean = false;
 
@@ -172,11 +202,6 @@ export class TimePicker extends LitElement {
     return [
       SharedStyles,
       css`
-        :host {
-          position: absolute;
-          z-index: 10;
-        }
-
         #time-picker {
           display: none;
           user-select: none;
@@ -287,7 +312,8 @@ export class TimePicker extends LitElement {
   render() {
     const { _open, _hour, _minute, _step, _amSelected, amPm } = this;
 
-    const numberPos = _step === 0 ? hourPos : minutePos;
+    const numberPos =
+      _step === 0 ? (this.duration ? durationPos : hourPos) : minutePos;
     const selectedNum = _step === 0 ? _hour : _minute;
 
     // language=HTML
@@ -306,7 +332,7 @@ export class TimePicker extends LitElement {
           <div class="overlay">
             <div class="digital-clock">
               <div class="hour" @click="${() => this._setStep(0)}">
-                ${_pad(_hour + 1)}
+                ${_pad(_hour + (this.duration ? 0 : 1))}
               </div>
               <div>:</div>
               <div class="minute" @click="${() => this._setStep(1)}">
@@ -355,7 +381,9 @@ export class TimePicker extends LitElement {
                   ${this._step === 1
                     ? getMinutes()
                     : this._amSelected
-                    ? getHours24()
+                    ? this.duration
+                      ? getDurationHours()
+                      : getHours24()
                     : getHours12()}
                 </g>
               </svg>
@@ -375,33 +403,31 @@ export class TimePicker extends LitElement {
     this._svgPt = this._svg.createSVGPoint();
   }
 
-  protected updated() {
-    this.hourSelected = this._step === 0;
-    this.minuteSelected = this._step === 1;
-    this.amSelected = this._amSelected;
-    this.pmSelected = !this._amSelected;
+  protected updated(
+    changedProps: PropertyValueMap<any> | Map<PropertyKey, unknown>
+  ): void {
+    if (changedProps.has('time')) {
+      const parts = this.time.split(':');
+      this._hour = keepInRange(Number(parts[0]), 0, 23);
+      this._minute = keepInRange(Number(parts[1]), 0, 59);
+    }
   }
 
-  open() {
-    return new Promise((resolve, reject) => {
-      this._resolve = resolve;
-      this._reject = reject;
-      this._open = true;
-    });
+  show() {
+    this._open = true;
   }
 
   _onCancel() {
     this._open = false;
-    this._reject();
+    this.dispatchEvent(new Event('time-picker-cancelled'));
   }
 
   _onConfirm() {
     this._open = false;
-    this._resolve(
-      `${_pad(this._hour + 1)}:${_pad(this._minute)}${
-        this.amPm ? (this._amSelected ? ' AM' : ' PM') : ''
-      }`
-    );
+    this.time = `${_pad(this._hour + (this.duration ? 0 : 1))}:${_pad(
+      this._minute
+    )}${this.amPm ? (this._amSelected ? ' AM' : ' PM') : ''}`;
+    this.dispatchEvent(new Event('time-picker-ok'));
   }
 
   _updateClock(x: number, y: number) {
@@ -420,7 +446,8 @@ export class TimePicker extends LitElement {
 
     let closestNumber = 0;
     let minDist = Infinity;
-    const numberPos = this._step === 0 ? hourPos : minutePos;
+    const numberPos =
+      this._step === 0 ? (this.duration ? durationPos : hourPos) : minutePos;
 
     for (let i = 0; i < (this._step === 0 ? (this.amPm ? 12 : 24) : 60); i++) {
       const dist = Math.hypot(
