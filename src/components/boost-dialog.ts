@@ -5,6 +5,7 @@ import { LitElement, html, css, PropertyValueMap } from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement, query } from 'lit/decorators.js';
 import './time-picker';
+import './temperature-picker';
 import '@material/mwc-dialog';
 import '@material/mwc-textfield';
 import '@material/mwc-button';
@@ -21,11 +22,17 @@ export class BootDialog extends LitElement {
   @query('time-picker')
   private timePicker!: any;
 
+  @query('temperature-picker')
+  private temperaturePicker!: any;
+
   @query('mwc-dialog')
   private boostDialog: any;
 
   @property({ type: String })
   private name = 'Test heading';
+
+  @property({ type: Number })
+  private temp = 20.0;
 
   @property({ type: String })
   private duration = '2:30';
@@ -44,13 +51,10 @@ export class BootDialog extends LitElement {
           <div>
             <mwc-textfield
               id="temperature"
-              type="text"
               label="Temperature"
-              validationMessage="A name is required"
-              required
-              minlength="1"
+              @click=${this.openTemperaturePicker} type="text"
             ></mwc-textfield>
-  </div><div>
+            </div><div>
             <mwc-textfield
             id="time"
               label="Time"
@@ -62,6 +66,7 @@ export class BootDialog extends LitElement {
         <mwc-button id="addUpdate" slot="secondaryAction" @click="${this.close}">Cancel</mwc-button>
         <mwc-button slot="primaryAction">Apply</mwc-button>
         </mwc-dialog>
+        <temperature-picker .value=${this.temp} duration @temperature-picker-cancelled=${this.temperaturePickerCancelled} @temperature-picker-ok=${this.temperaturePickerOK}></temperature-picker>
         <time-picker .time=${this.duration} duration @time-picker-cancelled=${this.timePickerCancelled} @time-picker-ok=${this.timePickerOK}></time-picker>
     `;
   }
@@ -75,6 +80,11 @@ export class BootDialog extends LitElement {
 
   private close() {
     this._open = false;
+  }
+
+  openTemperaturePicker(_event: Event) {
+    this.boostDialog.close();
+    this.temperaturePicker.show();
   }
 
   openTimePicker(_event: Event) {
@@ -93,5 +103,18 @@ export class BootDialog extends LitElement {
 
     const target = event.target as any;
     this.time.value = target.time;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  temperaturePickerCancelled(_e: Event) {
+    this.boostDialog.show();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  temperaturePickerOK(event: Event) {
+    this.boostDialog.show();
+
+    const target = event.target as any;
+    this.temperature.value = target.value;
   }
 }
