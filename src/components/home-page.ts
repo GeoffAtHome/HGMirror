@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 import { LitElement, html, css, PropertyValueMap } from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement, query, state } from 'lit/decorators.js';
-import { ZoneData, ZoneMode } from '../actions/hg-data';
+import { defaultZoneData, ZoneData, ZoneMode } from '../actions/hg-data';
 import { SharedStyles } from './shared-styles';
 import '@material/mwc-button';
 import './zone-card';
@@ -32,16 +32,7 @@ export class HomePage extends LitElement {
   private authString: string = '';
 
   @state()
-  zone: ZoneData = {
-    name: '',
-    id: 'xxx',
-    mode: ZoneMode.ModeTest,
-    isSwitch: false,
-    isOn: false,
-    boost: 0,
-    devices: [],
-    objTimer: [],
-  };
+  zone: ZoneData = defaultZoneData;
 
   private openBoostDialog(event: CustomEvent<{ zone: ZoneData }>) {
     this.zone = event.detail.zone;

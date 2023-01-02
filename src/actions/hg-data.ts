@@ -51,9 +51,10 @@ export enum DeviceType {
 }
 
 export interface HgMode {
-  iMode: ZoneMode;
+  iMode?: ZoneMode;
   fBoostSP?: number;
   iBoostTimeRemaining?: number;
+  objTimer?: Array<HgTimer>;
 }
 
 export interface SensorDevice {
@@ -82,7 +83,7 @@ export type Devices = SensorDevice | SwitchDevice | TRVDevice;
 
 export interface ZoneData {
   name: string;
-  id: string;
+  id: number;
   mode: ZoneMode;
   isSwitch: boolean;
   isOn: boolean;
@@ -93,7 +94,7 @@ export interface ZoneData {
 
 export const defaultZoneData: ZoneData = {
   name: '',
-  id: '',
+  id: 0,
   mode: ZoneMode.ModeTest,
   isSwitch: false,
   boost: -1,

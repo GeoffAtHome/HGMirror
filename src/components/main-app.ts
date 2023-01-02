@@ -303,8 +303,10 @@ export class MainApp extends connect(store)(LitElement) {
                       class="page"
                       ?active="${this._page === 'timers'}"
                       .zones="${this._zones}"
-                      .zoneId="${this._subPage}"
+                      .zoneIndex="${this._subPage}"
                       .allZones="${this._subPage === '-1'}"
+                      .authString="${this._authString}"
+                      .serverName="${this._serverName}"
                     ></timer-card>
                     <my-view404
                       class="page"

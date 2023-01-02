@@ -129,7 +129,7 @@ function LogError(text: string, err: any) {
 export async function updateHgMode(
   serverName: string,
   authString: string,
-  zoneId: string,
+  zoneId: number,
   mode: HgMode
 ) {
   const url = `${serverName.slice(0, -1)}/${zoneId}`;

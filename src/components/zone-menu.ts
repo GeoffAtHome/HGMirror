@@ -7,7 +7,7 @@ export class ZoneMenu extends LitElement {
   private zoneName = '';
 
   @property({ type: String })
-  public zoneID = '';
+  public zoneIndex = '';
 
   static styles = css`
     :host {
@@ -16,7 +16,7 @@ export class ZoneMenu extends LitElement {
   `;
 
   render() {
-    return html`<a name="${this.zoneName}" href="/timer/${this.zoneID}"
+    return html`<a name="${this.zoneName}" href="/timer/${this.zoneIndex}"
       >${this.zoneName}</a
     >`;
   }

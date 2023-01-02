@@ -11,16 +11,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 import { LitElement, html, css, PropertyValueMap } from 'lit';
 // eslint-disable-next-line import/extensions
 import { property, customElement, state, query } from 'lit/decorators.js';
+// eslint-disable-next-line import/extensions
+import { classMap } from 'lit/directives/class-map.js';
 
 import '@material/mwc-fab';
+// eslint-disable-next-line import/no-duplicates
+import { Dialog } from '@material/mwc-dialog';
 import { SharedStyles } from './shared-styles';
+// eslint-disable-next-line import/no-duplicates
+import '@material/mwc-dialog';
+import '@material/mwc-button';
 import './time-zone';
 
-import { ZoneData } from '../actions/hg-data';
+import { HgMode, HgTimer, ZoneData } from '../actions/hg-data';
 import { clearIcon, restoreIcon, saveIcon } from './my-icons';
+import { updateHgMode } from '../reducers/hg-data';
+
+interface TimerData {
+  addr: number;
+  objTimer: Array<HgTimer>;
+  name: string;
+}
+
+const VERSION_SIGNATURE = 'HG-MIRROR V3';
+interface SavedData {
+  version: string;
+  savedDate: Date;
+  zones: Array<TimerData>;
+}
 
 @customElement('timer-card')
 export class TimerCard extends LitElement {
+  @query('#invalid')
+  private invalidFileDialog!: Dialog;
+
   @query('mwc-fab.clear')
   private fabClear!: any;
 
@@ -31,16 +55,22 @@ export class TimerCard extends LitElement {
   private fabRestore!: any;
 
   @query('#fileRestore')
-  private fileRestore!: HTMLElement;
+  private fileRestore!: HTMLInputElement;
 
   @query('#hiddenSaver')
-  private hiddenSaver!: HTMLElement;
+  private hiddenSaver!: HTMLAnchorElement;
 
   @property({ type: Array })
   private zones!: Array<ZoneData>;
 
   @property({ type: Number })
-  private zoneId = 0;
+  private zoneIndex = 0;
+
+  @property({ type: String })
+  private serverName: string = '';
+
+  @property({ type: String })
+  private authString: string = '';
 
   @property({ type: String })
   private _filename = '';
@@ -51,6 +81,19 @@ export class TimerCard extends LitElement {
   @property({ type: Boolean })
   private allZones: boolean = true;
 
+  @property({ type: Boolean })
+  private invalidData: boolean = true;
+
+  @state()
+  private message = '';
+
+  @state()
+  savedData: SavedData = {
+    version: '',
+    savedDate: new Date(),
+    zones: [],
+  };
+
   static get styles() {
     return [
       SharedStyles,
@@ -59,6 +102,10 @@ export class TimerCard extends LitElement {
           display: inline-block;
           padding: 10px;
           width: 95%;
+        }
+
+        .active {
+          display: none;
         }
 
         mwc-fab.save {
@@ -78,6 +125,9 @@ export class TimerCard extends LitElement {
           right: 50px;
           bottom: 30px;
         }
+        a {
+          display: none;
+        }
       `,
     ];
   }
@@ -90,8 +140,8 @@ export class TimerCard extends LitElement {
               html`<h2>${item?.name}</h2>
                 <time-zone .zone="${item}"></time-zone>`
           )}`
-        : html`<h2>${this.zones[this.zoneId]?.name}</h2>
-            <time-zone .zone="${this.zones[this.zoneId]}"></time-zone>`}
+        : html`<h2>${this.zones[this.zoneIndex]?.name}</h2>
+            <time-zone .zone="${this.zones[this.zoneIndex]}"></time-zone>`}
 
       <mwc-fab class="save" title="Save" @click="${this._save}"></mwc-fab>
       <mwc-fab class="clear" title="Clear" @click="${this._clear}"></mwc-fab>
@@ -100,51 +150,91 @@ export class TimerCard extends LitElement {
         title="Restore"
         @click="${this._restore}"
       ></mwc-fab>
+      <a
+        id="hiddenSaver"
+        href="${this._file}"
+        download="${this._filename}"
+        hidden
+        >THIS IS HIDDEN!</a
+      >
+      <input
+        id="fileRestore"
+        @change="${this._restoreFile}"
+        accept="application/json"
+        type="file"
+        hidden=""
+      />
+      <mwc-dialog id="invalid" heading="Invalid file type">
+        <div>${this.message}</div>
+        <mwc-button id="addUpdate" slot="secondaryAction" @click="${this.close}"
+          >Cancel</mwc-button
+        >
+        <mwc-button
+          class="${classMap({
+            active: this.invalidData,
+          })}"
+          slot="primaryAction"
+          @click=${this.apply}
+          >Apply</mwc-button
+        >
+      </mwc-dialog>
     `;
   }
 
   // eslint-disable-next-line class-methods-use-this
   _clear() {
-    const payload = {
-      objTimer: [
-        {
-          fSP: 0,
-          iDay: 0,
-          iTm: 0,
-        },
-        {
-          fSP: 0,
-          iDay: 1,
-          iTm: 0,
-        },
-        {
-          fSP: 0,
-          iDay: 2,
-          iTm: 0,
-        },
-        {
-          fSP: 0,
-          iDay: 3,
-          iTm: 0,
-        },
-        {
-          fSP: 0,
-          iDay: 4,
-          iTm: 0,
-        },
-        {
-          fSP: 0,
-          iDay: 5,
-          iTm: 0,
-        },
-        {
-          fSP: 0,
-          iDay: 6,
-          iTm: 0,
-        },
-      ],
+    const payload: Array<HgTimer> = [
+      {
+        fSP: 0,
+        iDay: 0,
+        iTm: 0,
+      },
+      {
+        fSP: 0,
+        iDay: 1,
+        iTm: 0,
+      },
+      {
+        fSP: 0,
+        iDay: 2,
+        iTm: 0,
+      },
+      {
+        fSP: 0,
+        iDay: 3,
+        iTm: 0,
+      },
+      {
+        fSP: 0,
+        iDay: 4,
+        iTm: 0,
+      },
+      {
+        fSP: 0,
+        iDay: 5,
+        iTm: 0,
+      },
+      {
+        fSP: 0,
+        iDay: 6,
+        iTm: 0,
+      },
+    ];
+
+    const zoneMode: HgMode = {
+      objTimer: payload,
     };
-    return payload;
+
+    if (this.allZones)
+      for (const zone of this.zones)
+        updateHgMode(this.serverName, this.authString, zone.id, zoneMode);
+    else
+      updateHgMode(
+        this.serverName,
+        this.authString,
+        this.zones[this.zoneIndex].id,
+        zoneMode
+      );
   }
 
   protected firstUpdated(
@@ -155,33 +245,43 @@ export class TimerCard extends LitElement {
     this.fabRestore.icon = restoreIcon;
   }
 
-  protected updated(
-    _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
-  ): void {
-    console.log(this.zoneId);
-  }
-
-  private _save() {
-    const rawData = {
-      /* addr: this.zone.id,
-      data: {
-        objTimer: this.zone.objTimer,
-      },
-      name: this.zone.name, */
+  async _save() {
+    const rawData: SavedData = {
+      version: VERSION_SIGNATURE,
+      savedDate: new Date(),
+      zones: [],
     };
+    if (this.allZones) {
+      for (const zone of this.zones) {
+        rawData.zones.push({
+          addr: zone.id,
+          objTimer: zone.objTimer,
+          name: zone.name,
+        });
+      }
+      this._filename = 'all.json';
+    } else {
+      const zone = this.zones[this.zoneIndex];
+      rawData.zones.push({
+        addr: zone.id,
+        objTimer: zone.objTimer,
+        name: zone.name,
+      });
+      this._filename = `${zone.name}.json`;
+    }
 
     const data = new Blob([JSON.stringify(rawData)], {
       type: 'application/json',
     });
 
-    this._filename =
-      this.zoneId === -1 ? 'all.json' : `${this.zones[this.zoneId].name}.json`;
     // If we are replacing a previously generated file we need to
     // manually revoke the object URL to avoid memory leaks.
     if (this._file !== null) {
       window.URL.revokeObjectURL(this._file);
     }
     this._file = window.URL.createObjectURL(data);
+
+    await this.updateComplete;
 
     const event = new MouseEvent('click');
     this.hiddenSaver.dispatchEvent(event);
@@ -193,65 +293,76 @@ export class TimerCard extends LitElement {
 
   // eslint-disable-next-line class-methods-use-this
   private _restoreFile() {
-    /* const { length } = this.fileRestore.files;
-    const file = this.fileRestore.files[0];
+    const file = this.fileRestore.files;
 
     const reader = new FileReader();
-    reader.onloadstart = event => {
+
+    reader.onerror = (event: ProgressEvent<FileReader>) => {
       this.dispatchEvent(
-        new CustomEvent('load-start', {
+        new CustomEvent('error', {
           bubbles: true,
           composed: true,
-          detail: event.target.result,
+          detail: event.target?.error,
         })
       );
     };
-    reader.onloadend = event => {
-      this.dispatchEvent(
-        new CustomEvent('update-timer', {
-          bubbles: true,
-          composed: true,
-          detail: JSON.parse(event.target.result),
-        })
-      );
-    };
-    reader.onerror = event => {
-      true,
-        this.dispatchEvent(
-          new CustomEvent('error', {
-            bubbles: true,
-            composed: true,
-            detail: event.target.result,
-          })
-        );
-      this.clearInput();
-    };
-    reader.abort = event => {
+    reader.onabort = (event: ProgressEvent<FileReader>) => {
       this.dispatchEvent(
         new CustomEvent('abort', {
           bubbles: true,
           composed: true,
-          detail: event.target.result,
+          detail: event.target?.abort,
         })
       );
-      this.clearInput();
     };
-    reader.onload = event => {
-      // The file's text will be printed here
-      this.dispatchEvent(
-        new CustomEvent('load', {
-          bubbles: true,
-          composed: true,
-          detail: event.target.result,
-        })
-      );
+    reader.onload = event => this.loadSavedFile(event);
 
-      this.clearInput();
-    };
-    reader.readAsText(file); */
+    if (file && file.length > 0) {
+      reader.readAsText(file[0]);
+    }
   }
 
-  private clearInput() {
-    this.fileRestore.innerHTML = '';
+  loadSavedFile(event: ProgressEvent<FileReader>) {
+    try {
+      const data: SavedData = JSON.parse(
+        event.target?.result as string
+      ) as SavedData;
+
+      this.invalidData = true;
+      if (data.version !== VERSION_SIGNATURE) {
+        this.message = `Wrong file version. This file is version: ${data.version}`;
+        this.savedData = { version: '', savedDate: new Date(), zones: [] };
+      } else {
+        this.invalidData = false;
+        const names = data.zones.map(zone => zone.name);
+        this.savedData = data;
+        if (names.length === 1)
+          this.message = `About to load timer for the following zone: ${names}`;
+        else
+          this.message = `About to load timers for the following zones:  ${names.join(
+            ', '
+          )}`;
+      }
+      this.invalidFileDialog.show();
+    } catch (err) {
+      this.invalidData = true;
+      this.message = 'Error in loading the file';
+      this.savedData = { version: '', savedDate: new Date(), zones: [] };
+      this.invalidFileDialog.show();
+    }
+  }
+
+  private close() {
+    this.invalidFileDialog.close();
+  }
+
+  apply() {
+    const { zones } = this.savedData;
+    for (const zone of zones) {
+      const zoneMode: HgMode = {
+        objTimer: zone.objTimer,
+      };
+      updateHgMode(this.serverName, this.authString, zone.addr, zoneMode);
+    }
   }
 }
