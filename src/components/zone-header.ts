@@ -10,8 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 import { LitElement, html, css } from 'lit';
 // eslint-disable-next-line import/extensions
-import { property, customElement, query } from 'lit/decorators.js';
-import { defaultZoneData, ZoneData, ZoneMode } from '../actions/hg-data';
+import { property, customElement } from 'lit/decorators.js';
+import {
+  defaultZoneData,
+  ZoneData,
+  ZoneMode,
+  HgMode,
+} from '../actions/hg-data';
 import { boostIcon, footprintIcon, offIcon, timerIcon } from './my-icons';
 import './last-seen';
 import { SharedStyles } from './shared-styles';
@@ -78,17 +83,13 @@ export class ZoneHeader extends LitElement {
   }
 
   private boostMode(event: PointerEvent) {
-    const myEvent = new CustomEvent<{ id: string; name: string }>(
-      'boost-dialog',
-      {
-        composed: true,
-        bubbles: true,
-        detail: {
-          id: this.zone.id,
-          name: this.zone.name,
-        },
-      }
-    );
+    const myEvent = new CustomEvent<{ zone: ZoneData }>('boost-dialog', {
+      composed: true,
+      bubbles: true,
+      detail: {
+        zone: this.zone,
+      },
+    });
     this.dispatchEvent(myEvent);
     event.preventDefault();
   }
@@ -99,8 +100,10 @@ export class ZoneHeader extends LitElement {
     const target = event.currentTarget;
 
     if (target instanceof Element) {
-      const mode = Number(target.getAttribute('mode'));
-      updateHgMode(this.serverName, this.authString, this.zone.id, mode);
+      const zoneMode: HgMode = {
+        iMode: Number(target.getAttribute('mode')),
+      };
+      updateHgMode(this.serverName, this.authString, this.zone.id, zoneMode);
     }
   }
 

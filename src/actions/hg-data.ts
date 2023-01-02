@@ -50,6 +50,12 @@ export enum DeviceType {
   switch = 3,
 }
 
+export interface HgMode {
+  iMode: ZoneMode;
+  fBoostSP?: number;
+  iBoostTimeRemaining?: number;
+}
+
 export interface SensorDevice {
   deviceType: DeviceType;
   batteryLevel: number;

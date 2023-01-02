@@ -21,6 +21,7 @@ import {
   DeviceType,
   TRVDevice,
   SwitchDevice,
+  HgMode,
 } from '../actions/hg-data';
 import { RootAction, RootState, store } from '../store';
 
@@ -70,31 +71,35 @@ function getDevices(item: any): Array<Devices> {
   const devices: Array<Devices> = [];
 
   for (const [x, node] of item.nodes.entries()) {
-    if (node.childValues.LUMINANCE !== undefined) {
-      const sensorDevice: SensorDevice = {
-        deviceType: DeviceType.sensor,
-        batteryLevel: node.childValues.Battery.val,
-        temperature: node.childValues.TEMPERATURE.val.toFixed(1),
-        lastSeen: node.childValues.lastComms.val,
-        luminance: node.childValues.LUMINANCE.val,
-        motion: 0,
-      };
-      devices.push(sensorDevice);
-    } else if (node.childValues.HEATING_1 !== undefined) {
-      const trvDevice: TRVDevice = {
-        deviceType: DeviceType.trv,
-        batteryLevel: node.childValues.Battery.val,
-        temperature: node.childValues.HEATING_1.val.toFixed(1),
-        lastSeen: node.childValues.lastComms.val,
-      };
-      devices.push(trvDevice);
-    } else if (node.childValues.SwitchBinary !== undefined) {
-      const switchDevice: SwitchDevice = {
-        deviceType: DeviceType.switch,
-        onOff: item.bIsActive,
-        lastSeen: node.childValues.lastComms.val,
-      };
-      devices.push(switchDevice);
+    try {
+      if (node.childValues.LUMINANCE !== undefined) {
+        const sensorDevice: SensorDevice = {
+          deviceType: DeviceType.sensor,
+          batteryLevel: node.childValues.Battery.val,
+          temperature: node.childValues.TEMPERATURE.val.toFixed(1),
+          lastSeen: node.childValues.lastComms.val,
+          luminance: node.childValues.LUMINANCE.val,
+          motion: 0,
+        };
+        devices.push(sensorDevice);
+      } else if (node.childValues.HEATING_1 !== undefined) {
+        const trvDevice: TRVDevice = {
+          deviceType: DeviceType.trv,
+          batteryLevel: node.childValues.Battery.val,
+          temperature: node.childValues.HEATING_1.val.toFixed(1),
+          lastSeen: node.childValues.lastComms.val,
+        };
+        devices.push(trvDevice);
+      } else if (node.childValues.SwitchBinary !== undefined) {
+        const switchDevice: SwitchDevice = {
+          deviceType: DeviceType.switch,
+          onOff: item.bIsActive,
+          lastSeen: node.childValues.lastComms.val,
+        };
+        devices.push(switchDevice);
+      }
+    } catch (err) {
+      console.log('err');
     }
   }
 
@@ -125,19 +130,18 @@ export async function updateHgMode(
   serverName: string,
   authString: string,
   zoneId: string,
-  mode: number
+  mode: HgMode
 ) {
   const url = `${serverName.slice(0, -1)}/${zoneId}`;
   let results: any = {};
   try {
-    const data = { iMode: mode };
     const result = await fetch(url, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         Authorization: authString,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(mode),
     });
 
     if (result.status === 200) {
