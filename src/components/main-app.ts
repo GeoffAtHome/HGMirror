@@ -30,7 +30,6 @@ import { hgDataSelector } from '../reducers/hg-data';
 import '@material/mwc-top-app-bar';
 import '@material/mwc-drawer';
 import '@material/mwc-button';
-import '@pwabuilder/pwainstall';
 import { logUserIn, logUserOut } from './user-login';
 import './zone-menu';
 import { menuIcon, arrowBackIcon, logOutIcon } from './my-icons';
@@ -338,6 +337,7 @@ export class MainApp extends connect(store)(LitElement) {
         ${this._message}.
       </snack-bar>
       <pwa-install></pwa-install>
+      <pwa-update offlineToastDuration="0" swpath="sw.js"></pwa-update>
     `;
   }
 

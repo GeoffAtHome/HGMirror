@@ -1,16 +1,4 @@
 {
-  "background_color": "#ffffff",
-  "description": "Reflects Genius Hub info from local connection if available",
-  "dir": "ltr",
-  "display": "fullscreen",
-  "name": "Genius Mirror",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "Genius hub web mirror",
-  "start_url": "https://geniusmirrorv2.firebaseapp.com/",
-  "theme_color": "#3f51b5",
-  "categories": ["productivity", "utilities"],
-  "screenshots": [],
   "icons": [
     {
       "src": "windows11/SmallTile.scale-100.png",
@@ -460,8 +448,5 @@
       "src": "ios/1024.png",
       "sizes": "1024x1024"
     }
-  ],
-  "shortcuts": [],
-  "lang": "en",
-  "display_override": ["fullscreen", "standalone"]
+  ]
 }

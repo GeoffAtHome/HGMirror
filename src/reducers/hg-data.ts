@@ -187,7 +187,9 @@ export async function fetchHgData(credentials: Credentials) {
     });
   } catch (err) {
     // Local failed - try the server
-    store.dispatch(notifyMessage('Failed to get data from local IP address'));
+    store.dispatch(
+      notifyMessage('Failed to get data from local IP address trying server')
+    );
     const url = credentials.serverName;
     try {
       result = await fetch(url, {
@@ -198,7 +200,9 @@ export async function fetchHgData(credentials: Credentials) {
         },
       });
     } catch (err2) {
-      store.dispatch(notifyMessage('Failed to get data from server'));
+      store.dispatch(
+        notifyMessage('Failed to get data from server displaying stale data')
+      );
       LogError(JSON.stringify(err2), err);
       gotData = false;
     }
