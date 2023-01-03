@@ -14,6 +14,7 @@ import { property, customElement, query, state } from 'lit/decorators.js';
 import { defaultZoneData, ZoneData, ZoneMode } from '../actions/hg-data';
 import { SharedStyles } from './shared-styles';
 import '@material/mwc-button';
+import './home-card';
 import './zone-card';
 import './boost-dialog';
 
@@ -59,14 +60,20 @@ export class HomePage extends LitElement {
   protected render() {
     return html`
       <div @boost-dialog=${this.openBoostDialog}>
-        ${this.zones.map(
-          (item, index) =>
-            html`<zone-card
-              .zone="${item}"
-              .index="${index}"
-              .authString="${this.authString}"
-              .serverName="${this.serverName}"
-            ></zone-card>`
+        ${this.zones.map((item, index) =>
+          item.id === 0
+            ? html`<home-card
+                .zone="${item}"
+                .index="${index}"
+                .authString="${this.authString}"
+                .serverName="${this.serverName}"
+              ></home-card>`
+            : html`<zone-card
+                .zone="${item}"
+                .index="${index}"
+                .authString="${this.authString}"
+                .serverName="${this.serverName}"
+              ></zone-card>`
         )}
       </div>
       <boost-dialog

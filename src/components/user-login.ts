@@ -17,7 +17,7 @@ import '@vaadin/login';
 import fetch from 'unfetch';
 import { computeHash } from './sha256';
 import { store } from '../store';
-import { navigate } from '../actions/app';
+import { navigate, notifyMessage } from '../actions/app';
 
 import { userDataSelectUser } from '../actions/user';
 import userData, { userDataSelector } from '../reducers/user';
@@ -37,8 +37,16 @@ if (hgDataSelector(store.getState()) === undefined) {
   });
 }
 
+export interface Credentials {
+  localAddress: string;
+  serverName: string;
+  authString: string;
+  useLocalIP: boolean;
+  loggedIn: boolean;
+}
+
 // Test the username and password
-let credentials = {
+let credentials: Credentials = {
   localAddress: '',
   serverName: '',
   authString: '',
@@ -46,16 +54,31 @@ let credentials = {
   loggedIn: false,
 };
 
+let dataTimer: number | any | undefined;
+
+function getData() {
+  if (credentials.loggedIn) {
+    fetchHgData(credentials);
+  }
+}
 function LogError(text: string, err: any) {
   // eslint-disable-next-line no-console
   console.error(`${text}: ${err}`);
 }
 
-async function signIn(
-  authString: string,
-  localaddress: string,
-  useLocalIP: boolean
-) {
+function signInEnd() {
+  localStorage.setItem('loggedIn', 'true');
+  dataTimer = setInterval(() => getData(), 10 * 1000);
+  store.dispatch(
+    userDataSelectUser(true, credentials.serverName, credentials.authString)
+  );
+  fetchHgData(credentials);
+  const newLocation = `/#home`;
+  window.history.pushState({}, '', newLocation);
+  store.dispatch(navigate(decodeURIComponent(newLocation)));
+}
+
+async function signIn(authString: string) {
   const url = 'https://hub.geniushub.co.uk/checkin';
   let results: any = {};
   try {
@@ -77,38 +100,29 @@ async function signIn(
       credentials.loggedIn = true;
       credentials.authString = authString;
       credentials.serverName = serverName;
+      credentials.localAddress = results.data.internal_ip;
       localStorage.setItem('credentials', btoa(JSON.stringify(credentials)));
-      localStorage.setItem('loggedIn', 'true');
-
-      store.dispatch(userDataSelectUser(true, serverName, authString));
-      fetchHgData(serverName, authString);
-      const newLocation = `/#home`;
-      window.history.pushState({}, '', newLocation);
-      store.dispatch(navigate(decodeURIComponent(newLocation)));
+      store.dispatch(notifyMessage('Successfully logged in'));
+      signInEnd();
     }
   } catch (err) {
+    // Check-in has failed - if we have previously logged in we can try to carry on with local IP address.
+    store.dispatch(notifyMessage('Failed login - will try with stale data'));
+    if (credentials.loggedIn) signInEnd();
     LogError(JSON.stringify(err), err);
   }
 }
-
-function getData() {
-  if (credentials.loggedIn) {
-    fetchHgData(credentials.serverName, credentials.authString);
-  }
-}
-
-const dataTimer = setInterval(() => getData(), 10 * 1000);
 
 export function logUserIn() {
   const credentialsText = localStorage.getItem('credentials');
   if (credentialsText !== null && credentialsText !== '') {
     credentials = JSON.parse(atob(credentialsText));
-    signIn(
-      credentials.authString,
-      credentials.localAddress,
-      credentials.useLocalIP
-    );
+    signIn(credentials.authString);
   }
+}
+
+export function logUserOut() {
+  if (dataTimer) clearInterval(dataTimer);
 }
 
 @customElement('user-login')
@@ -147,7 +161,7 @@ export class UserLogin extends LitElement {
 
     try {
       this.loginForm.opened = false;
-      signIn(authString, '192.168.15.225', true);
+      signIn(authString);
     } catch (err: any) {
       LogError('loginButton', err);
       this.loginForm.opened = true;

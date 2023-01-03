@@ -152,7 +152,7 @@ export class ZoneHeader extends LitElement {
               >
             `}
       </div>
-      <div>${this.zone.name}</div>
+      <div>${this.zone.name}&nbsp;</div>
       ${this.zone.mode === ZoneMode.ModeBoost
         ? html` <div>
             <last-seen down .lastSeen="${this.zone.boost}"></last-seen>

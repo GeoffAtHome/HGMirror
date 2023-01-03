@@ -81,6 +81,17 @@ export interface TRVDevice {
 
 export type Devices = SensorDevice | SwitchDevice | TRVDevice;
 
+interface WeatherData {
+  // eslint-disable-next-line camelcase
+  feels_like: number;
+  humidity: number;
+  message: string;
+  precipitation: number;
+  status: number;
+  temperature: number;
+  // eslint-disable-next-line camelcase
+  weather_type: number;
+}
 export interface ZoneData {
   name: string;
   id: number;
@@ -88,8 +99,11 @@ export interface ZoneData {
   isSwitch: boolean;
   isOn: boolean;
   boost: number;
+  tmBoilerDaily?: number;
+  tmBoilerWeekly?: number;
   devices: Array<Devices>;
   objTimer: Array<HgTimer>;
+  weatherData?: WeatherData;
 }
 
 export const defaultZoneData: ZoneData = {

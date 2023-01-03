@@ -31,7 +31,7 @@ import '@material/mwc-top-app-bar';
 import '@material/mwc-drawer';
 import '@material/mwc-button';
 import '@pwabuilder/pwainstall';
-import { logUserIn } from './user-login';
+import { logUserIn, logUserOut } from './user-login';
 import './zone-menu';
 import { menuIcon, arrowBackIcon, logOutIcon } from './my-icons';
 import './snack-bar';
@@ -255,14 +255,15 @@ export class MainApp extends connect(store)(LitElement) {
             <a ?selected="${this._page === 'timer'}" href="/#timers#-1"
               >All zones</a
             >
-            ${this._zones.map(
-              (item, index) =>
-                html`<a
-                  ?selected="${this._page === 'timers' &&
-                  this._subPage === index.toString()}"
-                  href="/#timers#${index}"
-                  >${item.name}</a
-                >`
+            ${this._zones.map((item, index) =>
+              item.id === 0
+                ? html``
+                : html`<a
+                    ?selected="${this._page === 'timers' &&
+                    this._subPage === index.toString()}"
+                    href="/#timers#${index}"
+                    >${item.name}</a
+                  >`
             )}
           </nav>
         </div>
@@ -277,17 +278,23 @@ export class MainApp extends connect(store)(LitElement) {
               @click="${this._menuButtonClicked}"
               >${menuIcon}</mwc-button
             >
-            <div slot="actionItems"></div>
-            <mwc-button class="btn" title="Logout" slot="actionItems"
-              >${logOutIcon}</mwc-button
-            >
-            <mwc-button
-              class="btn"
-              title="Back"
-              slot="actionItems"
-              @click="${_BackButtonClicked}"
-              >${arrowBackIcon}</mwc-button
-            >
+
+            <div slot="actionItems">
+              <mwc-button
+                class="btn"
+                title="Logout"
+                slot="actionItems"
+                @click=${this._logout}
+                >${logOutIcon}</mwc-button
+              >
+              <mwc-button
+                class="btn"
+                title="Back"
+                slot="actionItems"
+                @click="${_BackButtonClicked}"
+                >${arrowBackIcon}</mwc-button
+              >
+            </div>
           </mwc-top-app-bar>
           <div>
             <main id="track" role="main">
@@ -393,5 +400,10 @@ export class MainApp extends connect(store)(LitElement) {
     } else if (deltaX < -100 && deltaY < 100) {
       window.history.forward();
     }
+  }
+
+  _logout() {
+    this._loggedIn = false;
+    logUserOut();
   }
 }

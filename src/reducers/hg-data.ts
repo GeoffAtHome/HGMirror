@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 */
 
 import { Reducer } from 'redux';
+import { notifyMessage } from '../actions/app';
 import {
   HgDataState,
   HgData,
@@ -23,6 +24,7 @@ import {
   SwitchDevice,
   HgMode,
 } from '../actions/hg-data';
+import { Credentials } from '../components/user-login';
 import { RootAction, RootState, store } from '../store';
 
 const defaultData: HgData = {
@@ -115,7 +117,25 @@ function getZone(item: any): ZoneData {
     boost: item.iMode === ZoneMode.ModeBoost ? item.iBoostTimeRemaining : -1,
     devices: getDevices(item),
     objTimer: item.objTimer,
-    isOn: item.bIsActive,
+    isOn: item.iID === 0 ? item.bHeatEnabled : item.bOutRequestHeat,
+  };
+
+  return zoneItem;
+}
+
+function getHomeZone(item: any): ZoneData {
+  const zoneItem: ZoneData = {
+    name: item.strName,
+    id: item.iID,
+    mode: item.iMode,
+    isSwitch: item.nodes[0].childValues.SwitchBinary !== undefined,
+    boost: item.iMode === ZoneMode.ModeBoost ? item.iBoostTimeRemaining : -1,
+    devices: getDevices(item),
+    objTimer: item.objTimer,
+    isOn: item.bHeatEnabled,
+    tmBoilerDaily: item.tmBoilerDaily,
+    tmBoilerWeekly: item.tmBoilerWeekly,
+    weatherData: item.weatherData,
   };
 
   return zoneItem;
@@ -151,37 +171,58 @@ export async function updateHgMode(
     LogError(JSON.stringify(err), err);
   }
 }
-export async function fetchHgData(serverName: string, authString: string) {
-  const url = serverName;
+export async function fetchHgData(credentials: Credentials) {
   let results: any = {};
+  let result: any;
+  let gotData = true;
   try {
-    const result = await fetch(url, {
+    // Always try local first
+    const url = `http://${credentials.localAddress}:1223/v3/zones`;
+    result = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: authString,
+        Authorization: credentials.authString,
       },
     });
-
-    if (result.status === 200) {
-      results = await result.json();
-      const zone: any = results.data.sort(
-        (a: { iPriority: number }, b: { iPriority: number }) =>
-          a.iPriority - b.iPriority
-      );
-      const zones: Array<ZoneData> = [];
-      if (zone.entries !== undefined) {
-        for (const [x, item] of zone.entries()) {
-          const zoneItem: ZoneData = getZone(item);
-          zones.push(zoneItem);
-        }
-      }
-      // Remove the first entry
-      zones.shift();
-
-      store.dispatch(hgDataSetData(results, zones));
-    }
   } catch (err) {
-    LogError(JSON.stringify(err), err);
+    // Local failed - try the server
+    store.dispatch(notifyMessage('Failed to get data from local IP address'));
+    const url = credentials.serverName;
+    try {
+      result = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: credentials.authString,
+        },
+      });
+    } catch (err2) {
+      store.dispatch(notifyMessage('Failed to get data from server'));
+      LogError(JSON.stringify(err2), err);
+      gotData = false;
+    }
+  }
+
+  if (gotData && result.status === 200) {
+    results = await result.json();
+    const zone: any = results.data.sort(
+      (a: { iPriority: number }, b: { iPriority: number }) =>
+        a.iPriority - b.iPriority
+    );
+    const zones: Array<ZoneData> = [];
+    if (zone.entries !== undefined) {
+      for (const [x, item] of zone.entries()) {
+        const zoneItem: ZoneData =
+          item.iID === 0 ? getHomeZone(item) : getZone(item);
+        zones.push(zoneItem);
+      }
+    }
+    // Remove the first entry
+    // zones.shift();
+    // results.data[0].tmBoilerDaily;
+    // results.data[0].tmBoilerWeekly
+
+    store.dispatch(hgDataSetData(results, zones));
   }
 }
