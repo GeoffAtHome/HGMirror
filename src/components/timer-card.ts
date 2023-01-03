@@ -45,6 +45,9 @@ export class TimerCard extends LitElement {
   @query('#invalid')
   private invalidFileDialog!: Dialog;
 
+  @query('#restore')
+  private restoreFileDialog!: Dialog;
+
   @query('mwc-fab.clear')
   private fabClear!: any;
 
@@ -80,9 +83,6 @@ export class TimerCard extends LitElement {
 
   @property({ type: Boolean })
   private allZones: boolean = true;
-
-  @property({ type: Boolean })
-  private invalidData: boolean = true;
 
   @state()
   private message = '';
@@ -160,7 +160,7 @@ export class TimerCard extends LitElement {
       <input
         id="fileRestore"
         @change="${this._restoreFile}"
-        accept="application/json"
+        accept=".gm3"
         type="file"
         hidden=""
       />
@@ -169,14 +169,14 @@ export class TimerCard extends LitElement {
         <mwc-button id="addUpdate" slot="secondaryAction" @click="${this.close}"
           >Cancel</mwc-button
         >
-        <mwc-button
-          class="${classMap({
-            active: this.invalidData,
-          })}"
-          slot="primaryAction"
-          @click=${this.apply}
-          >Apply</mwc-button
+      </mwc-dialog>
+
+      <mwc-dialog id="restore" heading="Restore timer data">
+        <div>${this.message}</div>
+        <mwc-button id="addUpdate" slot="secondaryAction" @click="${this.close}"
+          >Cancel</mwc-button
         >
+        <mwc-button slot="primaryAction" @click=${this.apply}>Apply</mwc-button>
       </mwc-dialog>
     `;
   }
@@ -259,7 +259,7 @@ export class TimerCard extends LitElement {
           name: zone.name,
         });
       }
-      this._filename = 'all.json';
+      this._filename = 'all.gm3';
     } else {
       const zone = this.zones[this.zoneIndex];
       rawData.zones.push({
@@ -267,7 +267,7 @@ export class TimerCard extends LitElement {
         objTimer: zone.objTimer,
         name: zone.name,
       });
-      this._filename = `${zone.name}.json`;
+      this._filename = `${zone.name}.gm3`;
     }
 
     const data = new Blob([JSON.stringify(rawData)], {
@@ -328,12 +328,11 @@ export class TimerCard extends LitElement {
         event.target?.result as string
       ) as SavedData;
 
-      this.invalidData = true;
       if (data.version !== VERSION_SIGNATURE) {
         this.message = `Wrong file version. This file is version: ${data.version}`;
         this.savedData = { version: '', savedDate: new Date(), zones: [] };
+        this.invalidFileDialog.show();
       } else {
-        this.invalidData = false;
         const names = data.zones.map(zone => zone.name);
         this.savedData = data;
         if (names.length === 1)
@@ -342,10 +341,9 @@ export class TimerCard extends LitElement {
           this.message = `About to load timers for the following zones:  ${names.join(
             ', '
           )}`;
+        this.restoreFileDialog.show();
       }
-      this.invalidFileDialog.show();
     } catch (err) {
-      this.invalidData = true;
       this.message = 'Error in loading the file';
       this.savedData = { version: '', savedDate: new Date(), zones: [] };
       this.invalidFileDialog.show();
@@ -354,6 +352,7 @@ export class TimerCard extends LitElement {
 
   private close() {
     this.invalidFileDialog.close();
+    this.restoreFileDialog.close();
   }
 
   apply() {
@@ -363,6 +362,7 @@ export class TimerCard extends LitElement {
         objTimer: zone.objTimer,
       };
       updateHgMode(this.serverName, this.authString, zone.addr, zoneMode);
+      this.restoreFileDialog.close();
     }
   }
 }

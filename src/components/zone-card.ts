@@ -70,8 +70,8 @@ export class ZoneCard extends LitElement {
 
   protected render() {
     return html`
-      <div>
-        <a href="/#timers#${this.index}">
+      <a href="/#timers#${this.index}">
+        <div>
           <zone-header
             .zone="${this.zone}"
             .authString="${this.authString}"
@@ -92,8 +92,8 @@ export class ZoneCard extends LitElement {
                 return html``;
             }
           })}
-        </a>
-      </div>
+        </div>
+      </a>
     `;
   }
 

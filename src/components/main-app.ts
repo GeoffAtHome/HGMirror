@@ -46,7 +46,7 @@ function getTitle(page: string) {
 
   switch (page) {
     case 'home':
-      title = 'Home page';
+      title = 'Heating zones';
       break;
 
     case 'welcome':
@@ -55,6 +55,10 @@ function getTitle(page: string) {
 
     case 'userLogin':
       title = 'Login';
+      break;
+
+    case 'timers':
+      title = 'Heating schedule';
       break;
 
     default:
