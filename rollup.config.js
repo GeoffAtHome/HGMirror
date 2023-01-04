@@ -8,6 +8,11 @@ import { createSpaConfig } from '@open-wc/building-rollup';
 // import { createBasicConfig } from '@open-wc/building-rollup';
 
 const baseConfig = createSpaConfig({
+  nodeResolve: {
+    browser: true,
+    dedupe: ['lit-html'],
+    moduleDirectories: ['./node_modules'],
+  },
   // use the outputdir option to modify where files are output
   // outputDir: 'dist',
 

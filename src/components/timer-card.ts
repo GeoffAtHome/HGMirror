@@ -135,10 +135,11 @@ export class TimerCard extends LitElement {
   protected render() {
     return html`
       ${this.allZones
-        ? html`${this.zones.map(
-            item =>
-              html`<h2>${item?.name}</h2>
-                <time-zone .zone="${item}"></time-zone>`
+        ? html`${this.zones.map(item =>
+            item?.id === 0
+              ? html``
+              : html`<h2>${item?.name}</h2>
+                  <time-zone .zone="${item}"></time-zone>`
           )}`
         : html`<h2>${this.zones[this.zoneIndex]?.name}</h2>
             <time-zone .zone="${this.zones[this.zoneIndex]}"></time-zone>`}

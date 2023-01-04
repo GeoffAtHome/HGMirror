@@ -1,6 +1,7 @@
 ## editors
 /.idea
 /.vscode
+/.firebase
 
 ## system files
 .DS_Store
@@ -22,3 +23,4 @@
 
 storybook-static
 custom-elements.json
+
