@@ -171,45 +171,43 @@ export async function updateHgMode(
     LogError(JSON.stringify(err), err);
   }
 }
-export async function fetchHgData(credentials: Credentials) {
-  let results: any = {};
-  let result: any;
-  let gotData = true;
+
+async function fetchData(url: string, credentials: Credentials) {
   try {
-    // Always try local first
-    const url = `http://${credentials.localAddress}:1223/v3/zones`;
-    result = await fetch(url, {
+    const result = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Authorization: credentials.authString,
       },
     });
+
+    return result;
   } catch (err) {
     // Local failed - try the server
     store.dispatch(
       notifyMessage('Failed to get data from local IP address trying server')
     );
-    const url = credentials.serverName;
-    try {
-      result = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: credentials.authString,
-        },
-      });
-    } catch (err2) {
-      store.dispatch(
-        notifyMessage('Failed to get data from server displaying stale data')
-      );
-      LogError(JSON.stringify(err2), err);
-      gotData = false;
-    }
+    return null;
   }
+}
 
-  if (gotData && result.status === 200) {
-    results = await result.json();
+let localFetchFailed = false;
+
+export async function fetchHgData(credentials: Credentials) {
+  let result: any;
+
+  const url = localFetchFailed
+    ? credentials.serverName
+    : `http://${credentials.localAddress}:1223/v3/zones`;
+
+  result = await fetchData(url, credentials);
+  if (result === null) {
+    localFetchFailed = true;
+    result = await fetchData(credentials.serverName, credentials);
+  }
+  if (result.status === 200) {
+    const results = await result.json();
     const zone: any = results.data.sort(
       (a: { iPriority: number }, b: { iPriority: number }) =>
         a.iPriority - b.iPriority
@@ -222,11 +220,9 @@ export async function fetchHgData(credentials: Credentials) {
         zones.push(zoneItem);
       }
     }
-    // Remove the first entry
-    // zones.shift();
-    // results.data[0].tmBoilerDaily;
-    // results.data[0].tmBoilerWeekly
-
     store.dispatch(hgDataSetData(results, zones));
+  } else {
+    // failed to get the data
+    store.dispatch(notifyMessage('Failed to get data'));
   }
 }
