@@ -95,6 +95,9 @@ interface WeatherData {
 export interface ZoneData {
   name: string;
   id: number;
+  fPV?: number; // Actual temperature
+  // fPV_offset: number;
+  fSP?: number; // Set Point
   mode: ZoneMode;
   isSwitch: boolean;
   isOn: boolean;

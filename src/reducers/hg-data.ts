@@ -118,6 +118,8 @@ function getZone(item: any): ZoneData {
     devices: getDevices(item),
     objTimer: item.objTimer,
     isOn: item.iID === 0 ? item.bHeatEnabled : item.bOutRequestHeat,
+    fPV: item.fPV, // Actual temperature
+    fSP: item.fSP, // Set Point
   };
 
   return zoneItem;
