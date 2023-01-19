@@ -109,7 +109,7 @@ export class MainApp extends connect(store)(LitElement) {
   private _authString: string = '';
 
   @property({ type: Boolean })
-  private _loggedIn: boolean = false;
+  private _loggedIn: boolean = true;
 
   @property({ type: Array<ZoneData> })
   private _zones: Array<ZoneData> = [];
@@ -310,38 +310,36 @@ export class MainApp extends connect(store)(LitElement) {
           </mwc-top-app-bar>
           <div>
             <main id="track" role="main">
-              ${this._loggedIn === true
-                ? html` <home-page
-                      class="page"
-                      ?active="${this._page === 'home'}"
-                      .zones="${this._zones}"
-                      .authString="${this._authString}"
-                      .serverName="${this._serverName}"
-                    ></home-page>
-                    <welcome-page
-                      class="page"
-                      ?active="${this._page === 'welcome'}"
-                    ></welcome-page>
-                    <timer-card
-                      class="page"
-                      ?active="${this._page === 'timers'}"
-                      .zones="${this._zones}"
-                      .zoneIndex="${this._subPage}"
-                      .allZones="${this._subPage === '-1'}"
-                      .authString="${this._authString}"
-                      .serverName="${this._serverName}"
-                    ></timer-card>
-                    <my-view404
-                      class="page"
-                      ?active="${this._page === 'view404'}"
-                    ></my-view404>`
-                : html`
-                    <user-login
-                      class="page"
-                      ?active="${this._page === 'userLogin'}"
-                      .loggedIn="${this._loggedIn}"
-                    ></user-login>
-                  `}
+              <home-page
+                class="page"
+                ?active="${this._page === 'home'}"
+                .zones="${this._zones}"
+                .authString="${this._authString}"
+                .serverName="${this._serverName}"
+              ></home-page>
+              <welcome-page
+                class="page"
+                ?active="${this._page === 'welcome'}"
+              ></welcome-page>
+              <timer-card
+                class="page"
+                ?active="${this._page === 'timers'}"
+                .zones="${this._zones}"
+                .zoneIndex="${this._subPage}"
+                .allZones="${this._subPage === '-1'}"
+                .authString="${this._authString}"
+                .serverName="${this._serverName}"
+              ></timer-card>
+              <my-view404
+                class="page"
+                ?active="${this._page === 'view404'}"
+              ></my-view404>
+
+              <user-login
+                class="page"
+                ?active="${this._page === 'userLogin'}"
+                .loggedIn="${this._loggedIn}"
+              ></user-login>
             </main>
           </div>
         </div>
@@ -388,7 +386,7 @@ export class MainApp extends connect(store)(LitElement) {
     this._authString = usersState!._authString;
     this._serverName = usersState!._serverName;
 
-    if (this._loggedIn === false && this._page !== 'userLogin') {
+    if (this._loggedIn === false) {
       const newLocation = `/#userLogin`;
       window.history.pushState({}, '', newLocation);
       store.dispatch(navigate(decodeURIComponent(newLocation)));
@@ -424,5 +422,8 @@ export class MainApp extends connect(store)(LitElement) {
   _logout() {
     this._loggedIn = false;
     logUserOut();
+    const newLocation = `/#userLogin`;
+    window.history.pushState({}, '', newLocation);
+    store.dispatch(navigate(decodeURIComponent(newLocation)));
   }
 }

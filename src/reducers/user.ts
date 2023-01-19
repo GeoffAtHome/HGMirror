@@ -13,7 +13,7 @@ import { UsersState, USER_LOGGED_IN } from '../actions/user';
 import { RootAction, RootState } from '../store';
 
 const INITIAL_STATE: UsersState = {
-  _loggedIn: false,
+  _loggedIn: true,
   _serverName: '',
   _authString: '',
 };
