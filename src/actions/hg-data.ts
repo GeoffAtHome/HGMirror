@@ -54,6 +54,7 @@ export interface HgMode {
   iMode?: ZoneMode;
   fBoostSP?: number;
   iBoostTimeRemaining?: number;
+  iOverrideDuration?: number;
   objTimer?: Array<HgTimer>;
 }
 
@@ -107,6 +108,9 @@ export interface ZoneData {
   devices: Array<Devices>;
   objTimer: Array<HgTimer>;
   weatherData?: WeatherData;
+  assumedTemp: number;
+  iOverrideDuration: number;
+  fBoostSP: number;
 }
 
 export const defaultZoneData: ZoneData = {
@@ -118,6 +122,9 @@ export const defaultZoneData: ZoneData = {
   devices: [],
   objTimer: [],
   isOn: false,
+  assumedTemp: 0,
+  iOverrideDuration: 0,
+  fBoostSP: 0,
 };
 
 export interface HgDataState {

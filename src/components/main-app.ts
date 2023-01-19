@@ -23,18 +23,31 @@ import { store, RootState } from '../store';
 
 // These are the actions needed by this element.
 import { navigate, updateOffline, updateDrawerState } from '../actions/app';
-import { userDataSelector } from '../reducers/user';
-import { hgDataSelector } from '../reducers/hg-data';
+import userData, { userDataSelector } from '../reducers/user';
+import hgData, { hgDataSelector } from '../reducers/hg-data';
 
 // These are the elements needed by this element.
 import '@material/mwc-top-app-bar';
 import '@material/mwc-drawer';
 import '@material/mwc-button';
-import { logUserIn, logUserOut } from './user-login';
+import { logUserIn, logUserOut } from './login-utils';
 import './zone-menu';
 import { menuIcon, arrowBackIcon, logOutIcon } from './my-icons';
 import './snack-bar';
 import { ZoneData } from '../actions/hg-data';
+
+// We are lazy loading its reducer.
+if (userDataSelector(store.getState()) === undefined) {
+  store.addReducers({
+    userData,
+  });
+}
+
+if (hgDataSelector(store.getState()) === undefined) {
+  store.addReducers({
+    hgData,
+  });
+}
 
 function _BackButtonClicked() {
   window.history.back();
@@ -374,6 +387,12 @@ export class MainApp extends connect(store)(LitElement) {
     this._loggedIn = usersState!._loggedIn;
     this._authString = usersState!._authString;
     this._serverName = usersState!._serverName;
+
+    if (this._loggedIn === false && this._page !== 'userLogin') {
+      const newLocation = `/#userLogin`;
+      window.history.pushState({}, '', newLocation);
+      store.dispatch(navigate(decodeURIComponent(newLocation)));
+    }
 
     this._snackbarOpened = state.app!.snackbarOpened;
     this._drawerOpened = state.app!.drawerOpened;

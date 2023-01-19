@@ -24,7 +24,7 @@ import {
   SwitchDevice,
   HgMode,
 } from '../actions/hg-data';
-import { Credentials } from '../components/user-login';
+import { Credentials } from '../components/login-utils';
 import { RootAction, RootState, store } from '../store';
 
 const defaultData: HgData = {
@@ -118,8 +118,11 @@ function getZone(item: any): ZoneData {
     devices: getDevices(item),
     objTimer: item.objTimer,
     isOn: item.iID === 0 ? item.bHeatEnabled : item.bOutRequestHeat,
-    fPV: item.fPV, // Actual temperature
-    fSP: item.fSP, // Set Point
+    fPV: item.fPV,
+    fSP: item.fSP,
+    assumedTemp: item.assumedTemp,
+    iOverrideDuration: item.iOverrideDuration,
+    fBoostSP: item.fBoostSP,
   };
 
   return zoneItem;
@@ -138,6 +141,9 @@ function getHomeZone(item: any): ZoneData {
     tmBoilerDaily: item.tmBoilerDaily,
     tmBoilerWeekly: item.tmBoilerWeekly,
     weatherData: item.weatherData,
+    assumedTemp: 0,
+    iOverrideDuration: 0,
+    fBoostSP: 0,
   };
 
   return zoneItem;

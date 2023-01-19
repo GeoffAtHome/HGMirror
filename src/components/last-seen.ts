@@ -65,10 +65,12 @@ export class LastSeen extends LitElement {
     const delta = this.down
       ? new Date(this.baseTime - now)
       : new Date(now - this.baseTime);
+    const hours = delta.getUTCHours();
     const minutes = delta.getUTCMinutes();
     const seconds = delta.getUTCSeconds();
+    const lhz = hours > 0 ? `${hours}:` : '';
     const lmz = minutes < 10 ? '0' : '';
     const lsz = seconds < 10 ? '0' : '';
-    this.value = `${lmz + minutes}:${lsz}${seconds}`;
+    this.value = `${lhz}${lmz + minutes}:${lsz}${seconds}`;
   }
 }

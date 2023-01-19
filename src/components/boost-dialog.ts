@@ -12,18 +12,23 @@ import '@material/mwc-dialog';
 import '@material/mwc-textfield';
 import '@material/mwc-formfield';
 import '@material/mwc-button';
-// eslint-disable-next-line import/no-duplicates
-import { Checkbox } from '@material/mwc-checkbox';
 import { SharedStyles } from './shared-styles';
 // eslint-disable-next-line import/no-duplicates
 import '@material/mwc-checkbox';
 import { updateHgMode } from '../reducers/hg-data';
 import { HgMode, ZoneData, ZoneMode } from '../actions/hg-data';
 
+function timeInSecondsToString(time: number) {
+  const hours = Math.floor(time / 3600);
+  const minutes = Math.floor((time - hours * 3600) / 60);
+  const lmz = hours < 10 ? '0' : '';
+  const lsz = minutes < 10 ? '0' : '';
+  return `${lmz + hours}:${lsz}${minutes}`;
+}
+
 @customElement('boost-dialog')
 export class BootDialog extends LitElement {
-  @query('mwc-icon-button')
-  @query('#temperature')
+  @query('#tempInput')
   private temperature!: any;
 
   @query('#time')
@@ -47,14 +52,8 @@ export class BootDialog extends LitElement {
   @property({ type: Object })
   private zone!: ZoneData;
 
-  @property({ type: Number })
-  private temp = 20.0;
-
   @property({ type: Boolean })
   private nextTimePeriod = false;
-
-  @property({ type: String })
-  private duration = '01:00';
 
   @property({ type: Boolean })
   _open = false;
@@ -80,9 +79,9 @@ export class BootDialog extends LitElement {
             })}"
           >
             <mwc-textfield
-              id="temperature"
+              id="tempInput"
               label="Temperature"
-              value="${this.temp}"
+              value="${this.zone.fBoostSP}"
               @click=${this.openTemperaturePicker}
               type="text"
             ></mwc-textfield>
@@ -95,7 +94,7 @@ export class BootDialog extends LitElement {
             <mwc-textfield
               id="time"
               label="Time"
-              value="${this.duration}"
+              value="${timeInSecondsToString(this.zone.iOverrideDuration)}"
               @click=${this.openTimePicker}
             ></mwc-textfield>
           </div>
@@ -112,13 +111,13 @@ export class BootDialog extends LitElement {
         <mwc-button slot="primaryAction" @click=${this.apply}>Apply</mwc-button>
       </mwc-dialog>
       <temperature-picker
-        .value=${this.temp}
+        .value=${this.zone.fBoostSP}
         duration
         @temperature-picker-cancelled=${this.temperaturePickerCancelled}
         @temperature-picker-ok=${this.temperaturePickerOK}
       ></temperature-picker>
       <time-picker
-        .time=${this.duration}
+        .time=${timeInSecondsToString(this.zone.iOverrideDuration)}
         duration
         @time-picker-cancelled=${this.timePickerCancelled}
         @time-picker-ok=${this.timePickerOK}
@@ -147,12 +146,10 @@ export class BootDialog extends LitElement {
     this.timePicker.show();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   timePickerCancelled(_e: Event) {
     this.boostDialog.show();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   timePickerOK(event: Event) {
     this.boostDialog.show();
 
@@ -160,12 +157,10 @@ export class BootDialog extends LitElement {
     this.time.value = target.time;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   temperaturePickerCancelled(_e: Event) {
     this.boostDialog.show();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   temperaturePickerOK(event: Event) {
     this.boostDialog.show();
 
@@ -178,12 +173,13 @@ export class BootDialog extends LitElement {
   }
 
   apply() {
-    const parts = this.duration.split(':');
+    const parts = this.time.value.split(':');
     const timeInSeconds = Number(parts[0]) * 60 * 60 + Number(parts[1]) * 60;
     const zoneMode: HgMode = {
       iMode: ZoneMode.ModeBoost,
-      fBoostSP: this.zone.isSwitch ? 1 : this.temp,
+      fBoostSP: this.zone.isSwitch ? 1 : Number(this.temperature.value),
       iBoostTimeRemaining: timeInSeconds,
+      iOverrideDuration: timeInSeconds,
     };
     updateHgMode(this.serverName, this.authString, this.zone.id, zoneMode);
     this.boostDialog.close();
