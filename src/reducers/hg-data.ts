@@ -79,7 +79,10 @@ function getDevices(item: any): Array<Devices> {
           deviceType: DeviceType.sensor,
           batteryLevel: node.childValues.Battery.val,
           temperature: node.childValues.TEMPERATURE.val.toFixed(1),
-          lastSeen: node.childValues.lastComms.val,
+          lastSeen:
+            node.childValues.lastComms !== undefined
+              ? node.childValues.lastComms.val
+              : 0,
           luminance: node.childValues.LUMINANCE.val,
           motion: 0,
         };
@@ -89,14 +92,20 @@ function getDevices(item: any): Array<Devices> {
           deviceType: DeviceType.trv,
           batteryLevel: node.childValues.Battery.val,
           temperature: node.childValues.HEATING_1.val.toFixed(1),
-          lastSeen: node.childValues.lastComms.val,
+          lastSeen:
+            node.childValues.lastComms !== undefined
+              ? node.childValues.lastComms.val
+              : 0,
         };
         devices.push(trvDevice);
       } else if (node.childValues.SwitchBinary !== undefined) {
         const switchDevice: SwitchDevice = {
           deviceType: DeviceType.switch,
           onOff: item.bIsActive,
-          lastSeen: node.childValues.lastComms.val,
+          lastSeen:
+            node.childValues.lastComms !== undefined
+              ? node.childValues.lastComms.val
+              : 0,
         };
         devices.push(switchDevice);
       }
