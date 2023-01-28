@@ -96,7 +96,7 @@ export const navigate: ActionCreator<ThunkResult> =
   (path: string) => dispatch => {
     // Extract the page name from path.
     const parts = path.split('#');
-    const page = parts.length > 1 ? parts[1] : 'welcome';
+    const page = parts.length > 1 ? parts[1] : 'home';
     const subPage = parts.length > 2 ? parts[2] : '';
 
     // Any other info you might want to extract from the path (like page type),

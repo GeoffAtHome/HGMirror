@@ -261,9 +261,6 @@ export class MainApp extends connect(store)(LitElement) {
         <div>
           <nav class="toolbar-list">
             <a ?selected="${this._page === 'home'}" href="/#home">Home</a>
-            <a ?selected="${this._page === 'welcome'}" href="/#welcome"
-              >Welcome</a
-            >
             <a ?selected="${this._page === 'timer'}" href="/#timers#-1"
               >All zones</a
             >
@@ -277,6 +274,9 @@ export class MainApp extends connect(store)(LitElement) {
                     >${item.name}</a
                   >`
             )}
+            <a ?selected="${this._page === 'welcome'}" href="/#welcome"
+              >Welcome</a
+            >
           </nav>
         </div>
         <!-- Header -->
