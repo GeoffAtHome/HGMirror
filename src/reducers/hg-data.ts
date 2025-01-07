@@ -127,6 +127,7 @@ function getDevices(item: any): Array<Devices> {
         devices.push(switchDevice);
       }
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log('err');
     }
   }
@@ -149,8 +150,6 @@ function getZone(item: any): ZoneData {
     assumedTemp: item.assumedTemp,
     iOverrideDuration: item.iOverrideDuration,
     fBoostSP: item.fBoostSP,
-    tmLastTick: item.tmLastTick,
-    motion: false,
   };
 
   return zoneItem;
@@ -172,8 +171,6 @@ function getHomeZone(item: any): ZoneData {
     assumedTemp: 0,
     iOverrideDuration: 0,
     fBoostSP: 0,
-    tmLastTick: 0,
-    motion: false,
   };
 
   return zoneItem;
