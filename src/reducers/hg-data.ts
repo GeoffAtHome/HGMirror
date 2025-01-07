@@ -69,6 +69,23 @@ export default hgData;
 
 export const hgDataSelector = (state: RootState) => state.hgData;
 
+function getMotion(item: any) {
+  // Find the last entry that ends with "Motion detected"
+  const lastMotionDetected = item.log
+    .slice()
+    .reverse()
+    .find((message: string) => message.endsWith('Motion detected'));
+
+  if (lastMotionDetected) {
+    const delta =
+      new Date().getTime() -
+      new Date(lastMotionDetected.substr(0, 23)).getTime();
+
+    return delta < 62574 ? 1 : 0;
+  }
+  return 0;
+}
+
 function getDevices(item: any): Array<Devices> {
   const devices: Array<Devices> = [];
 
@@ -84,7 +101,7 @@ function getDevices(item: any): Array<Devices> {
               ? node.childValues.lastComms.val
               : 0,
           luminance: node.childValues.LUMINANCE.val,
-          motion: 0,
+          motion: getMotion(item),
         };
         devices.push(sensorDevice);
       } else if (node.childValues.HEATING_1 !== undefined) {
@@ -132,6 +149,8 @@ function getZone(item: any): ZoneData {
     assumedTemp: item.assumedTemp,
     iOverrideDuration: item.iOverrideDuration,
     fBoostSP: item.fBoostSP,
+    tmLastTick: item.tmLastTick,
+    motion: false,
   };
 
   return zoneItem;
@@ -153,6 +172,8 @@ function getHomeZone(item: any): ZoneData {
     assumedTemp: 0,
     iOverrideDuration: 0,
     fBoostSP: 0,
+    tmLastTick: 0,
+    motion: false,
   };
 
   return zoneItem;

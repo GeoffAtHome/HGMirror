@@ -52,7 +52,7 @@ export async function signIn(authString: string) {
     const result = await fetch(url, {
       method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain',
         Authorization: authString,
       },
     });
